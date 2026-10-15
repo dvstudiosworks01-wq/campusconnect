@@ -1,8 +1,6 @@
--- CampusConnect Migration 1: Schema, Tables, Constraints, and Indexes
 -- Target: Supabase PostgreSQL
+-- Note: Supabase pre-installs pgcrypto and uuid-ossp in the extensions schema
 
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- 1. PROFILES TABLE
 CREATE TABLE IF NOT EXISTS public.profiles (

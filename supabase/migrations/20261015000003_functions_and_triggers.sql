@@ -212,8 +212,8 @@ BEGIN
         RAISE EXCEPTION 'You are already registered for this event.';
     END IF;
 
-    -- Hash the raw invite code for storage
-    v_code_hash := encode(digest(p_invite_code, 'sha256'), 'hex');
+    -- Hash the raw invite code for storage (native PostgreSQL sha256)
+    v_code_hash := encode(sha256(convert_to(p_invite_code, 'UTF8')), 'hex');
 
     -- Create team
     INSERT INTO public.teams (event_id, team_name, leader_id, invite_code_hash, status)
@@ -254,7 +254,7 @@ BEGIN
         RAISE EXCEPTION 'Authentication required.';
     END IF;
 
-    v_code_hash := encode(digest(p_invite_code, 'sha256'), 'hex');
+    v_code_hash := encode(sha256(convert_to(p_invite_code, 'UTF8')), 'hex');
 
     SELECT * INTO v_team
     FROM public.teams
@@ -300,8 +300,8 @@ BEGIN
         RAISE EXCEPTION 'Please sign in to mark attendance.';
     END IF;
 
-    -- Hash incoming token
-    v_token_hash := encode(digest(p_token, 'sha256'), 'hex');
+    -- Hash incoming token (native PostgreSQL sha256)
+    v_token_hash := encode(sha256(convert_to(p_token, 'UTF8')), 'hex');
 
     -- Validate session: token hash must match, active, unrevoked, not expired
     SELECT * INTO v_session
