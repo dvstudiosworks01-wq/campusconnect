@@ -88,7 +88,7 @@ export function LandingPage() {
             className="bg-primary-500/10 text-primary-300 border-primary-500/30 px-3.5 py-1 text-xs uppercase tracking-wider font-semibold inline-flex items-center gap-1.5"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            Apex Institute of Technology
+            Kongu Engineering College, Perundurai
           </Badge>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight max-w-4xl mx-auto leading-tight sm:leading-none">

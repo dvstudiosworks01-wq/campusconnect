@@ -77,11 +77,11 @@ export function PublicLayout() {
             <div className="space-y-2 text-xs text-slate-500">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
-                <span>Apex Institute of Technology, Main Campus</span>
+                <span>Kongu Engineering College, Perundurai, Erode - 638060</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-slate-400 shrink-0" />
-                <span>events@apexcollege.edu</span>
+                <span>events@kongu.edu</span>
               </div>
               <div className="flex items-center gap-2 text-emerald-600 font-medium pt-1">
                 <ShieldCheck className="w-4 h-4 shrink-0" />

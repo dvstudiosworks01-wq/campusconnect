@@ -94,12 +94,12 @@ export function MyCertificatesPage() {
       doc.setFont('helvetica', 'bold')
       doc.setFontSize(22)
       doc.setTextColor(11, 19, 41) // Dark navy
-      doc.text('APEX INSTITUTE OF TECHNOLOGY', 148.5, 38, { align: 'center' })
+      doc.text('KONGU ENGINEERING COLLEGE', 148.5, 38, { align: 'center' })
 
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(10)
       doc.setTextColor(100, 116, 139)
-      doc.text('AFFILIATED UNIVERSITY • CAMPUS EVENT COORDINATION COMMITTEE', 148.5, 45, {
+      doc.text('AUTONOMOUS • AFFILIATED TO ANNA UNIVERSITY • PERUNDURAI, ERODE', 148.5, 45, {
         align: 'center',
       })
 
@@ -145,7 +145,7 @@ export function MyCertificatesPage() {
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(10)
       doc.setTextColor(100, 116, 139)
-      doc.text(`Held on campus at Apex Institute of Technology on ${issueDate}`, 148.5, 136, {
+      doc.text(`Held on campus at Kongu Engineering College on ${issueDate}`, 148.5, 136, {
         align: 'center',
       })
 

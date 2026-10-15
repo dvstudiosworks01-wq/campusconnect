@@ -80,7 +80,7 @@ export function CertificateVerifyPage() {
           Public Certificate Verification
         </h1>
         <p className="text-sm text-slate-500">
-          Verify the authenticity of digital certificates issued by Apex Institute of Technology for
+          Verify the authenticity of digital certificates issued by Kongu Engineering College for
           competitions, symposiums, and collegiate events.
         </p>
       </div>
@@ -175,7 +175,7 @@ export function CertificateVerifyPage() {
                     <ShieldCheck className="w-4 h-4 text-emerald-600" />
                     <span>Cryptographically verified on PostgreSQL database</span>
                   </div>
-                  <span className="font-semibold text-slate-700">Apex Institute of Technology</span>
+                  <span className="font-semibold text-slate-700">Kongu Engineering College</span>
                 </div>
               </div>
             ) : (
