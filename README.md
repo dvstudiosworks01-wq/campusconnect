@@ -170,8 +170,8 @@ Edge Functions in `supabase/functions/` run in Deno.
 ```env
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 RESEND_API_KEY=re_123456789
-COLLEGE_NAME="Apex Institute of Technology"
-FROM_EMAIL="CampusConnect <notifications@resend.dev>"
+COLLEGE_NAME="Kongu Engineering College"
+FROM_EMAIL="CampusConnect <notifications@kongu.edu>"
 ```
 
 ### Deploying Edge Functions via Supabase CLI:
