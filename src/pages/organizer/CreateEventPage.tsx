@@ -15,7 +15,7 @@ const eventFormSchema = z
   .object({
     title: z.string().min(3, 'Event title must be at least 3 characters'),
     description: z.string().min(10, 'Description must be at least 10 characters'),
-    category_id: z.string().uuid('Please select an event category'),
+    category_id: z.string().min(1, 'Please select an event category'),
     venue: z.string().min(2, 'Venue location is required'),
     start_at: z.string().min(1, 'Start date and time is required'),
     end_at: z.string().min(1, 'End date and time is required'),
@@ -187,6 +187,9 @@ export function CreateEventPage() {
                 onChange={(e) => handleChange('category_id', e.target.value)}
                 className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               >
+                {categories.length === 0 && (
+                  <option value="">Loading categories...</option>
+                )}
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
