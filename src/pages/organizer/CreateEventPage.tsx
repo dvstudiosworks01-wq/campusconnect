@@ -21,9 +21,9 @@ const eventFormSchema = z
     end_at: z.string().min(1, 'End date and time is required'),
     registration_deadline: z.string().min(1, 'Registration deadline is required'),
     capacity: z.coerce.number().int().positive('Capacity must be at least 1'),
-    registration_type: z.enum(['individual', 'team']),
-    team_min_size: z.coerce.number().int().min(1, 'Minimum team size is 1'),
-    team_max_size: z.coerce.number().int().min(1, 'Maximum team size is 1'),
+    registration_type: z.literal('individual').default('individual'),
+    team_min_size: z.coerce.number().int().default(1),
+    team_max_size: z.coerce.number().int().default(1),
     banner_url: z.string().url('Invalid image URL').optional().or(z.literal('')),
   })
   .refine(
@@ -39,14 +39,6 @@ const eventFormSchema = z
     {
       message: 'Registration deadline must be before or equal to event start time',
       path: ['registration_deadline'],
-    }
-  )
-  .refine(
-    (data) =>
-      data.registration_type !== 'team' || data.team_max_size >= data.team_min_size,
-    {
-      message: 'Team max size cannot be smaller than team min size',
-      path: ['team_max_size'],
     }
   )
 
@@ -69,9 +61,9 @@ export function CreateEventPage() {
     end_at: '',
     registration_deadline: '',
     capacity: 100,
-    registration_type: 'individual' as 'individual' | 'team',
-    team_min_size: 2,
-    team_max_size: 4,
+    registration_type: 'individual' as const,
+    team_min_size: 1,
+    team_max_size: 1,
     banner_url: '',
   })
 
@@ -127,11 +119,9 @@ export function CreateEventPage() {
         end_at: new Date(result.data.end_at).toISOString(),
         registration_deadline: new Date(result.data.registration_deadline).toISOString(),
         capacity: result.data.capacity,
-        registration_type: result.data.registration_type,
-        team_min_size:
-          result.data.registration_type === 'team' ? result.data.team_min_size : 1,
-        team_max_size:
-          result.data.registration_type === 'team' ? result.data.team_max_size : 1,
+        registration_type: 'individual',
+        team_min_size: 1,
+        team_max_size: 1,
         status: submitStatus,
         banner_url: result.data.banner_url || null,
       }
@@ -276,49 +266,6 @@ export function CreateEventPage() {
                 helperText="Must be <= Start Time"
                 required
               />
-            </div>
-          </div>
-
-          {/* Registration Mode & Team Config */}
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              Registration Format
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="space-y-1.5 text-left">
-                <label className="block text-sm font-medium text-slate-700">Format</label>
-                <select
-                  value={formData.registration_type}
-                  onChange={(e) => handleChange('registration_type', e.target.value)}
-                  className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                >
-                  <option value="individual">Individual Registration</option>
-                  <option value="team">Team Participation</option>
-                </select>
-              </div>
-
-              {formData.registration_type === 'team' && (
-                <>
-                  <Input
-                    label="Min Team Size"
-                    type="number"
-                    min={1}
-                    value={formData.team_min_size}
-                    onChange={(e) => handleChange('team_min_size', e.target.value)}
-                    error={errors.team_min_size}
-                    required
-                  />
-                  <Input
-                    label="Max Team Size"
-                    type="number"
-                    min={1}
-                    value={formData.team_max_size}
-                    onChange={(e) => handleChange('team_max_size', e.target.value)}
-                    error={errors.team_max_size}
-                    required
-                  />
-                </>
-              )}
             </div>
           </div>
 

@@ -168,7 +168,7 @@ export function LandingPage() {
               Upcoming College Highlights
             </h2>
             <p className="text-sm text-slate-500 mt-1">
-              Participate individually or assemble your department team before deadlines close.
+              Participate and register before deadlines close.
             </p>
           </div>
           <Link to="/events">
@@ -204,11 +204,8 @@ export function LandingPage() {
                       </Badge>
                     </div>
                     <div className="absolute top-3 right-3">
-                      <Badge
-                        variant={event.registration_type === 'team' ? 'warning' : 'info'}
-                        className="shadow capitalize"
-                      >
-                        {event.registration_type}
+                      <Badge variant="info" className="shadow capitalize">
+                        Individual
                       </Badge>
                     </div>
                   </div>

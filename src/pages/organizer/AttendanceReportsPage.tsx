@@ -124,13 +124,12 @@ export function AttendanceReportsPage() {
   const exportReportCSV = () => {
     if (reportData.length === 0) return
     const ev = events.find((e) => e.id === selectedEventId)
-    const headers = ['Student Name', 'Email', 'Department', 'Year', 'Team', 'Attendance', 'Check-In Method', 'Timestamp']
+    const headers = ['Student Name', 'Email', 'Department', 'Year', 'Attendance', 'Check-In Method', 'Timestamp']
     const rows = reportData.map((r) => [
       r.student?.full_name || 'N/A',
       r.student?.email || 'N/A',
       r.student?.department || 'N/A',
       r.student?.year_of_study || 'N/A',
-      r.team?.team_name || 'Individual',
       r.isPresent ? 'Present' : 'Absent',
       r.method || 'N/A',
       r.checked_in_at || 'N/A',
@@ -264,7 +263,6 @@ export function AttendanceReportsPage() {
                 <tr>
                   <th className="py-3 px-4">Student</th>
                   <th className="py-3 px-4">Department</th>
-                  <th className="py-3 px-4">Team</th>
                   <th className="py-3 px-4 text-center">Status</th>
                   <th className="py-3 px-4">Method</th>
                   <th className="py-3 px-4 text-right">Checked In At</th>
@@ -278,15 +276,6 @@ export function AttendanceReportsPage() {
                       <div className="text-[11px] text-slate-400">{row.student?.email}</div>
                     </td>
                     <td className="py-3.5 px-4 text-slate-600">{row.student?.department || '—'}</td>
-                    <td className="py-3.5 px-4">
-                      {row.team ? (
-                        <Badge variant="warning" className="text-[10px]">
-                          {row.team.team_name}
-                        </Badge>
-                      ) : (
-                        <span className="text-slate-400">Individual</span>
-                      )}
-                    </td>
                     <td className="py-3.5 px-4 text-center">
                       {row.isPresent ? (
                         <Badge variant="success" className="gap-1 inline-flex items-center">

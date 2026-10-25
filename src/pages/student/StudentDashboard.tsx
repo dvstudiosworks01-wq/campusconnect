@@ -123,7 +123,7 @@ export function StudentDashboard() {
             Welcome back, {profile?.full_name?.split(' ')[0] || 'Scholar'}!
           </h2>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            Track your registered events, join QR check-in sessions, collaborate with teammates, and
+            Track your registered events, join QR check-in sessions, and
             download verified credentials.
           </p>
           <div className="pt-3 flex flex-wrap gap-2.5">
@@ -240,11 +240,6 @@ export function StudentDashboard() {
                     <Badge variant="default" className="text-[11px]">
                       {item.event?.category?.name || 'Event'}
                     </Badge>
-                    {item.team && (
-                      <Badge variant="warning" className="text-[10px]">
-                        Team: {item.team.team_name}
-                      </Badge>
-                    )}
                   </div>
                   <h4 className="font-bold text-slate-900 line-clamp-1">{item.event?.title}</h4>
                   <div className="space-y-1 text-xs text-slate-500">

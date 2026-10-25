@@ -19,7 +19,6 @@ import { AuthCallbackPage } from '@/pages/public/AuthCallbackPage'
 // Student Pages
 import { StudentDashboard } from '@/pages/student/StudentDashboard'
 import { MyRegistrationsPage } from '@/pages/student/MyRegistrationsPage'
-import { TeamManagementPage } from '@/pages/student/TeamManagementPage'
 import { AttendanceStatusPage } from '@/pages/student/AttendanceStatusPage'
 import { MyCertificatesPage } from '@/pages/student/MyCertificatesPage'
 import { ProfilePage } from '@/pages/student/ProfilePage'
@@ -71,7 +70,7 @@ export function App() {
             >
               <Route path="/student" element={<StudentDashboard />} />
               <Route path="/student/registrations" element={<MyRegistrationsPage />} />
-              <Route path="/student/teams" element={<TeamManagementPage />} />
+              <Route path="/student/teams" element={<Navigate to="/student/registrations" replace />} />
               <Route path="/student/attendance" element={<AttendanceStatusPage />} />
               <Route path="/student/certificates" element={<MyCertificatesPage />} />
               <Route path="/student/profile" element={<ProfilePage />} />

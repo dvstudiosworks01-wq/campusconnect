@@ -114,7 +114,6 @@ export function EventRegistrationsPage() {
       'Email',
       'Department',
       'Year of Study',
-      'Team Name',
       'Status',
       'Attendance',
       'Registered At',
@@ -125,7 +124,6 @@ export function EventRegistrationsPage() {
       r.student?.email || 'N/A',
       r.student?.department || 'N/A',
       r.student?.year_of_study || 'N/A',
-      r.team?.team_name || 'Individual',
       r.status,
       attendanceMap[r.student_id] ? 'Present' : 'Absent',
       r.registered_at,
@@ -192,7 +190,7 @@ export function EventRegistrationsPage() {
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
           <input
             type="text"
-            placeholder="Search student or team..."
+            placeholder="Search student..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 h-9 w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
@@ -230,7 +228,6 @@ export function EventRegistrationsPage() {
                 <tr>
                   <th className="py-3 px-4">Student</th>
                   <th className="py-3 px-4">Department & Year</th>
-                  <th className="py-3 px-4">Team</th>
                   <th className="py-3 px-4">Registered Date</th>
                   <th className="py-3 px-4 text-center">Attendance</th>
                   <th className="py-3 px-4 text-right">Actions</th>
@@ -251,15 +248,6 @@ export function EventRegistrationsPage() {
                         <div className="text-[11px] text-slate-400">
                           {r.student?.year_of_study ? `Year ${r.student.year_of_study}` : '—'}
                         </div>
-                      </td>
-                      <td className="py-3.5 px-4">
-                        {r.team ? (
-                          <Badge variant="warning" className="text-[10px]">
-                            {r.team.team_name}
-                          </Badge>
-                        ) : (
-                          <span className="text-slate-400">Individual</span>
-                        )}
                       </td>
                       <td className="py-3.5 px-4 text-slate-500 font-medium">
                         {formatDateTime(r.registered_at)}

@@ -114,7 +114,7 @@ export function MyRegistrationsPage() {
         <div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">My Event Registrations</h2>
           <p className="text-sm text-slate-500 mt-0.5">
-            View all confirmed and past event registrations with schedule and team details.
+            View all confirmed and past event registrations with schedule details.
           </p>
         </div>
 
@@ -183,11 +183,6 @@ export function MyRegistrationsPage() {
                       >
                         {reg.status}
                       </Badge>
-                      {reg.team && (
-                        <Badge variant="warning" className="text-[11px]">
-                          Team: {reg.team.team_name}
-                        </Badge>
-                      )}
                     </div>
 
                     <h3 className="text-lg font-bold text-slate-900">{reg.event?.title}</h3>

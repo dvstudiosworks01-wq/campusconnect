@@ -29,7 +29,6 @@ export function EventsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('all')
   const [selectedStatus, setSelectedStatus] = useState<string>('all') // 'all' | 'upcoming' | 'ongoing' | 'completed'
-  const [selectedType, setSelectedType] = useState<string>('all') // 'all' | 'individual' | 'team'
 
   useEffect(() => {
     async function fetchEventsAndCategories() {
@@ -91,11 +90,6 @@ export function EventsPage() {
         return false
       }
 
-      // Registration Type filter
-      if (selectedType !== 'all' && ev.registration_type !== selectedType) {
-        return false
-      }
-
       // Timing filter
       const startTime = new Date(ev.start_at).getTime()
       const endTime = new Date(ev.end_at).getTime()
@@ -121,7 +115,7 @@ export function EventsPage() {
 
       return true
     })
-  }, [events, selectedCategoryId, selectedStatus, selectedType, searchQuery])
+  }, [events, selectedCategoryId, selectedStatus, searchQuery])
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -147,7 +141,7 @@ export function EventsPage() {
             />
           </div>
 
-          <div className="flex gap-2">
+          <div>
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
@@ -157,16 +151,6 @@ export function EventsPage() {
               <option value="upcoming">Upcoming</option>
               <option value="ongoing">Happening Now</option>
               <option value="completed">Completed</option>
-            </select>
-
-            <select
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 cursor-pointer"
-            >
-              <option value="all">All Modes</option>
-              <option value="individual">Individual</option>
-              <option value="team">Team Participation</option>
             </select>
           </div>
 
@@ -298,11 +282,7 @@ export function EventsPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <Users className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span className="capitalize">
-                          {event.registration_type} format{' '}
-                          {event.registration_type === 'team' &&
-                            `(${event.team_min_size}-${event.team_max_size} members)`}
-                        </span>
+                        <span>Individual Registration</span>
                       </div>
                     </div>
 
@@ -357,7 +337,6 @@ export function EventsPage() {
                 setSearchQuery('')
                 setSelectedCategoryId('all')
                 setSelectedStatus('all')
-                setSelectedType('all')
               }}
             >
               Reset All Filters

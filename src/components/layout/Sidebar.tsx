@@ -38,7 +38,6 @@ export function Sidebar({ onCloseMobile }: SidebarProps) {
   const studentLinks = [
     { label: 'Overview', to: '/student', icon: BarChart3 },
     { label: 'My Registrations', to: '/student/registrations', icon: Calendar },
-    { label: 'Team Hub', to: '/student/teams', icon: Users },
     { label: 'Attendance', to: '/student/attendance', icon: QrCode },
     { label: 'My Certificates', to: '/student/certificates', icon: Award },
     { label: 'Leaderboard', to: '/leaderboard', icon: Trophy },

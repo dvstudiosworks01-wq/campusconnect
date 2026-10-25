@@ -219,7 +219,7 @@ export function OrganizerDashboard() {
                     <th className="py-3 px-4">Event Title</th>
                     <th className="py-3 px-4">Category</th>
                     <th className="py-3 px-4">Schedule</th>
-                    <th className="py-3 px-4">Format</th>
+                    <th className="py-3 px-4">Capacity</th>
                     <th className="py-3 px-4 text-center">Status</th>
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
@@ -244,8 +244,8 @@ export function OrganizerDashboard() {
                         <td className="py-3.5 px-4 text-slate-500">
                           {formatDate(ev.start_at)} ({formatTime(ev.start_at)})
                         </td>
-                        <td className="py-3.5 px-4 capitalize text-slate-600">
-                          {ev.registration_type}
+                        <td className="py-3.5 px-4 text-slate-600">
+                          {ev.capacity} seats
                         </td>
                         <td className="py-3.5 px-4 text-center">
                           <Badge

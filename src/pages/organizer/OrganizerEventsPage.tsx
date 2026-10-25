@@ -160,8 +160,8 @@ export function OrganizerEventsPage() {
                     >
                       {ev.status}
                     </Badge>
-                    <Badge variant="outline" className="capitalize text-[11px]">
-                      {ev.registration_type} Mode (Max {ev.capacity} seats)
+                    <Badge variant="outline" className="text-[11px]">
+                      Max {ev.capacity} seats
                     </Badge>
                   </div>
 

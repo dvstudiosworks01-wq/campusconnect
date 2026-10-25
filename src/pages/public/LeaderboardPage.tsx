@@ -17,9 +17,7 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 import type { LeaderboardEntry, LeaderboardRule } from '@/types/database.types'
 
 export function LeaderboardPage() {
-  const [activeTab, setActiveTab] = useState<'individual' | 'teams'>('individual')
   const [individualData, setIndividualData] = useState<LeaderboardEntry[]>([])
-  const [teamData, setTeamData] = useState<any[]>([])
   const [rules, setRules] = useState<LeaderboardRule[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
@@ -127,22 +125,6 @@ export function LeaderboardPage() {
           }))
 
         setIndividualData(sortedIndividual)
-
-        // Process team results
-        if (resultsData) {
-          const teamResults = resultsData
-            .filter((r) => r.team_id && r.team)
-            .map((r, idx) => ({
-              id: r.id,
-              team_name: r.team.team_name,
-              event_title: r.event?.title || 'Team Competition',
-              points: r.points_awarded,
-              rank: r.rank,
-            }))
-            .sort((a, b) => b.points - a.points)
-
-          setTeamData(teamResults)
-        }
       } catch (err) {
         console.error('Error fetching leaderboard:', err)
       } finally {
@@ -222,56 +204,33 @@ export function LeaderboardPage() {
         </div>
       </div>
 
-      {/* Tabs & Search */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
-          <button
-            onClick={() => setActiveTab('individual')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-              activeTab === 'individual'
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <Trophy className="w-4 h-4 text-amber-500" />
-            <span>Individual Scholars</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('teams')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-              activeTab === 'teams'
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <Users className="w-4 h-4 text-blue-500" />
-            <span>Team Standings</span>
-          </button>
+      {/* Search Bar */}
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <Trophy className="w-5 h-5 text-amber-500" />
+          <h2 className="text-base font-bold text-slate-800">Individual Scholar Standings</h2>
         </div>
 
-        {activeTab === 'individual' && (
-          <div className="relative max-w-xs w-full">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Filter by student name or dept..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 h-9 w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-            />
-          </div>
-        )}
+        <div className="relative max-w-xs w-full">
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Filter by student name or dept..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9 h-9 w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+          />
+        </div>
       </div>
 
-      {/* Leaderboard Tables */}
+      {/* Leaderboard Table */}
       {isLoading ? (
         <Card className="border-slate-200 p-6 space-y-4">
           {[1, 2, 3, 4, 5].map((i) => (
             <Skeleton key={i} className="h-12 w-full rounded-lg" />
           ))}
         </Card>
-      ) : activeTab === 'individual' ? (
-        filteredIndividual.length > 0 ? (
+      ) : filteredIndividual.length > 0 ? (
           <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-subtle">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
@@ -354,41 +313,7 @@ export function LeaderboardPage() {
             title="Leaderboard is initializing"
             description="As competitions conclude and participants check in via QR, official rankings and points will appear here."
           />
-        )
-      ) : teamData.length > 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-subtle">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                <tr>
-                  <th className="py-3.5 px-4 w-16 text-center">Rank</th>
-                  <th className="py-3.5 px-4">Team Name</th>
-                  <th className="py-3.5 px-4">Event</th>
-                  <th className="py-3.5 px-4 text-right">Points Earned</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {teamData.map((t, idx) => (
-                  <tr key={t.id || idx} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-4 px-4 text-center">{getRankBadge(idx + 1)}</td>
-                    <td className="py-4 px-4 font-bold text-slate-900">{t.team_name}</td>
-                    <td className="py-4 px-4 text-xs text-slate-600">{t.event_title}</td>
-                    <td className="py-4 px-4 text-right font-extrabold text-primary-700">
-                      {t.points} pts
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      ) : (
-        <EmptyState
-          icon={<Users className="w-6 h-6" />}
-          title="No team results recorded"
-          description="Results for team-based hackathons and sports matches will populate here when organizers publish official scores."
-        />
-      )}
+        )}
     </div>
   )
 }

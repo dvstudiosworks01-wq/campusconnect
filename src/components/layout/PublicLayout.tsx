@@ -19,7 +19,7 @@ export function PublicLayout() {
               <span className="font-bold text-base text-slate-900">CampusConnect</span>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Official centralized event management, team coordination, QR attendance, and verified
+              Official centralized event management, QR attendance, and verified
               certificate issuance portal for college students and faculty.
             </p>
           </div>

@@ -191,8 +191,8 @@ export function EventApprovalQueue() {
                     <Badge variant="warning" className="text-[11px]">
                       Pending Review
                     </Badge>
-                    <Badge variant="outline" className="capitalize text-[11px]">
-                      {ev.registration_type} Format • Capacity: {ev.capacity}
+                    <Badge variant="outline" className="text-[11px]">
+                      Capacity: {ev.capacity} Seats
                     </Badge>
                   </div>
 

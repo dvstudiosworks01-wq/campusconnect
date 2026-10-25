@@ -11,21 +11,15 @@ import {
   ShieldAlert,
   Sparkles,
   ArrowLeft,
-  UserCheck,
-  UserPlus,
-  Copy,
-  Check,
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Card, CardContent } from '@/components/ui/Card'
-import { Modal } from '@/components/ui/Modal'
-import { Input } from '@/components/ui/Input'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useToast } from '@/components/ui/Toast'
 import { useAuth } from '@/context/AuthContext'
 import { supabase, isSupabaseConfigured } from '@/lib/supabase'
-import { formatDate, formatDateTime, formatTime, hasTimeConflict, generateInviteCode } from '@/lib/utils'
+import { formatDate, formatDateTime, formatTime, hasTimeConflict } from '@/lib/utils'
 import type { EventItem, Registration } from '@/types/database.types'
 
 export function EventDetailPage() {
@@ -43,14 +37,6 @@ export function EventDetailPage() {
 
   // Clash warning state
   const [conflictingEvent, setConflictingEvent] = useState<EventItem | null>(null)
-
-  // Team Modals
-  const [isCreateTeamOpen, setIsCreateTeamOpen] = useState(false)
-  const [isJoinTeamOpen, setIsJoinTeamOpen] = useState(false)
-  const [teamName, setTeamName] = useState('')
-  const [generatedCode, setGeneratedCode] = useState(generateInviteCode())
-  const [inputInviteCode, setInputInviteCode] = useState('')
-  const [copiedCode, setCopiedCode] = useState(false)
 
   useEffect(() => {
     async function loadEventData() {
@@ -175,96 +161,6 @@ export function EventDetailPage() {
     }
   }
 
-  // Handle Create Team
-  const handleCreateTeamSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!teamName.trim() || !user || !id) return
-
-    setIsSubmitting(true)
-    try {
-      const { data, error } = await supabase.rpc('create_team_with_leader', {
-        p_event_id: id,
-        p_team_name: teamName.trim(),
-        p_invite_code: generatedCode.trim(),
-      })
-
-      if (error) throw error
-
-      toast({
-        type: 'success',
-        title: 'Team Created!',
-        message: `Team "${teamName}" created. You are registered as team leader. Share code ${generatedCode} with your teammates.`,
-      })
-
-      setIsCreateTeamOpen(false)
-      setRegistrationCount((prev) => prev + 1)
-      setUserRegistration({
-        id: 'team-reg',
-        event_id: id,
-        student_id: user.id,
-        team_id: data?.team_id,
-        status: 'confirmed',
-        registered_at: new Date().toISOString(),
-      })
-    } catch (err: any) {
-      toast({
-        type: 'error',
-        title: 'Failed to Create Team',
-        message: err.message || 'Error occurred while creating team.',
-      })
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  // Handle Join Team with Invite Code
-  const handleJoinTeamSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!inputInviteCode.trim() || !user || !id) return
-
-    setIsSubmitting(true)
-    try {
-      const { data, error } = await supabase.rpc('join_team_with_code', {
-        p_event_id: id,
-        p_invite_code: inputInviteCode.trim().toUpperCase(),
-      })
-
-      if (error) throw error
-
-      toast({
-        type: 'success',
-        title: 'Joined Team!',
-        message: `Successfully joined team "${data?.team_name}". Registration confirmed.`,
-      })
-
-      setIsJoinTeamOpen(false)
-      setRegistrationCount((prev) => prev + 1)
-      setUserRegistration({
-        id: 'team-join-reg',
-        event_id: id,
-        student_id: user.id,
-        team_id: data?.team_id,
-        status: 'confirmed',
-        registered_at: new Date().toISOString(),
-      })
-    } catch (err: any) {
-      toast({
-        type: 'error',
-        title: 'Could Not Join Team',
-        message: err.message || 'Invalid invite code or team is full.',
-      })
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const copyCodeToClipboard = () => {
-    navigator.clipboard.writeText(generatedCode)
-    setCopiedCode(true)
-    setTimeout(() => setCopiedCode(false), 2000)
-    toast({ type: 'info', title: 'Code Copied', message: 'Share this code with teammates.' })
-  }
-
   if (isLoading) {
     return (
       <div className="max-w-5xl mx-auto px-4 py-10 space-y-6">
@@ -316,11 +212,8 @@ export function EventDetailPage() {
             <Badge variant="default" className="bg-white/95 text-slate-900 shadow">
               {event.category?.name || 'College Event'}
             </Badge>
-            <Badge
-              variant={event.registration_type === 'team' ? 'warning' : 'info'}
-              className="capitalize shadow"
-            >
-              {event.registration_type} Format
+            <Badge variant="info" className="capitalize shadow">
+              Individual Registration
             </Badge>
             {userRegistration && (
               <Badge variant="success" className="shadow flex items-center gap-1">
@@ -383,24 +276,6 @@ export function EventDetailPage() {
                   {event.description}
                 </p>
               </div>
-
-              {event.registration_type === 'team' && (
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                    <Users className="w-4 h-4 text-primary-600" />
-                    Team Participation Guidelines
-                  </h4>
-                  <ul className="text-xs text-slate-600 space-y-1 list-disc list-inside">
-                    <li>
-                      Team size must be between <strong>{event.team_min_size}</strong> and{' '}
-                      <strong>{event.team_max_size}</strong> members.
-                    </li>
-                    <li>The team leader creates the team and shares the unique 6-digit invitation code.</li>
-                    <li>Teammates must join using the invitation code before the registration deadline.</li>
-                    <li>Every team member must be checked in individually on event day to receive certificates.</li>
-                  </ul>
-                </div>
-              )}
 
               {/* Host / Organizer Card */}
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
@@ -505,7 +380,7 @@ export function EventDetailPage() {
                   <Button disabled size="lg" className="w-full bg-rose-200 text-rose-800">
                     Schedule Conflict Blocked
                   </Button>
-                ) : event.registration_type === 'individual' ? (
+                ) : (
                   <Button
                     size="lg"
                     className="w-full"
@@ -514,114 +389,12 @@ export function EventDetailPage() {
                   >
                     Confirm My Registration
                   </Button>
-                ) : (
-                  <div className="space-y-2">
-                    <Button
-                      size="lg"
-                      className="w-full"
-                      onClick={() => {
-                        setGeneratedCode(generateInviteCode())
-                        setIsCreateTeamOpen(true)
-                      }}
-                      leftIcon={<UserPlus className="w-4 h-4" />}
-                    >
-                      Create Team as Leader
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="w-full"
-                      onClick={() => setIsJoinTeamOpen(true)}
-                      leftIcon={<UserCheck className="w-4 h-4" />}
-                    >
-                      Join Existing Team with Code
-                    </Button>
-                  </div>
                 )}
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
-
-      {/* CREATE TEAM MODAL */}
-      <Modal
-        isOpen={isCreateTeamOpen}
-        onClose={() => setIsCreateTeamOpen(false)}
-        title="Create Team"
-        description={`Assemble a team for "${event.title}". You will be registered as the team leader.`}
-      >
-        <form onSubmit={handleCreateTeamSubmit} className="space-y-4">
-          <Input
-            label="Team Name"
-            placeholder="e.g. CyberKnights"
-            value={teamName}
-            onChange={(e) => setTeamName(e.target.value)}
-            required
-          />
-
-          <div className="space-y-1.5 text-left">
-            <label className="block text-sm font-medium text-slate-700">Team Invitation Code</label>
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                readOnly
-                value={generatedCode}
-                className="h-10 font-mono tracking-widest text-center text-lg font-bold bg-slate-100 rounded-lg border border-slate-300 w-full select-all text-slate-800"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={copyCodeToClipboard}
-                leftIcon={copiedCode ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-              >
-                {copiedCode ? 'Copied' : 'Copy'}
-              </Button>
-            </div>
-            <p className="text-xs text-slate-500">
-              Teammates will enter this code to join your team. Size: {event.team_min_size} -{' '}
-              {event.team_max_size} members.
-            </p>
-          </div>
-
-          <div className="pt-2 flex justify-end gap-2">
-            <Button type="button" variant="ghost" onClick={() => setIsCreateTeamOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" isLoading={isSubmitting}>
-              Create Team & Register
-            </Button>
-          </div>
-        </form>
-      </Modal>
-
-      {/* JOIN TEAM MODAL */}
-      <Modal
-        isOpen={isJoinTeamOpen}
-        onClose={() => setIsJoinTeamOpen(false)}
-        title="Join Team with Invite Code"
-        description="Enter the 6-character code provided by your team leader."
-      >
-        <form onSubmit={handleJoinTeamSubmit} className="space-y-4">
-          <Input
-            label="Invitation Code"
-            placeholder="e.g. 8K2M9P"
-            value={inputInviteCode}
-            onChange={(e) => setInputInviteCode(e.target.value.toUpperCase())}
-            className="font-mono tracking-widest uppercase text-center text-lg font-bold"
-            maxLength={6}
-            required
-          />
-          <div className="pt-2 flex justify-end gap-2">
-            <Button type="button" variant="ghost" onClick={() => setIsJoinTeamOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" isLoading={isSubmitting}>
-              Join Team
-            </Button>
-          </div>
-        </form>
-      </Modal>
     </div>
   )
 }

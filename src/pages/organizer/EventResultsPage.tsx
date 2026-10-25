@@ -125,12 +125,8 @@ export function EventResultsPage() {
     const matchingRule = rules.find((r) => r.rank === rank)
     const pointsAwarded = matchingRule ? matchingRule.points : (rank === 1 ? 10 : rank === 2 ? 7 : rank === 3 ? 5 : 0)
 
-    if (targetType === 'student' && !selectedStudentId) {
+    if (!selectedStudentId) {
       toast({ type: 'warning', title: 'Please select a student' })
-      return
-    }
-    if (targetType === 'team' && !selectedTeamId) {
-      toast({ type: 'warning', title: 'Please select a team' })
       return
     }
 
@@ -141,8 +137,8 @@ export function EventResultsPage() {
         rank,
         score: score ? parseFloat(score) : null,
         points_awarded: pointsAwarded,
-        student_id: targetType === 'student' ? selectedStudentId : null,
-        team_id: targetType === 'team' ? selectedTeamId : null,
+        student_id: selectedStudentId,
+        team_id: null,
       }
 
       // Check if rank already exists
@@ -261,41 +257,22 @@ export function EventResultsPage() {
                 </select>
               </div>
 
-              {selectedEvent?.registration_type === 'team' ? (
-                <div className="space-y-1.5 text-left">
-                  <label className="block text-sm font-medium text-slate-700">Winning Team</label>
-                  <select
-                    value={selectedTeamId}
-                    onChange={(e) => setSelectedTeamId(e.target.value)}
-                    className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
-                    required
-                  >
-                    <option value="">Select team...</option>
-                    {teams.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.team_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              ) : (
-                <div className="space-y-1.5 text-left">
-                  <label className="block text-sm font-medium text-slate-700">Winning Student</label>
-                  <select
-                    value={selectedStudentId}
-                    onChange={(e) => setSelectedStudentId(e.target.value)}
-                    className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
-                    required
-                  >
-                    <option value="">Select registered student...</option>
-                    {participants.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.full_name} ({s.email})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
+              <div className="space-y-1.5 text-left">
+                <label className="block text-sm font-medium text-slate-700">Winning Student</label>
+                <select
+                  value={selectedStudentId}
+                  onChange={(e) => setSelectedStudentId(e.target.value)}
+                  className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
+                  required
+                >
+                  <option value="">Select registered student...</option>
+                  {participants.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.full_name} ({s.email})
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <Input
                 label="Score / Marks (Optional)"
@@ -328,8 +305,8 @@ export function EventResultsPage() {
               {results.length > 0 ? (
                 <div className="space-y-3">
                   {results.map((res) => {
-                    const winnerLabel = res.team?.team_name || res.student?.full_name || 'Participant'
-                    const detail = res.student?.department || (res.team ? 'Team' : '')
+                    const winnerLabel = res.student?.full_name || 'Participant'
+                    const detail = res.student?.department || ''
 
                     return (
                       <div
