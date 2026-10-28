@@ -178,7 +178,8 @@ export function OrganizerEventsPage() {
                     <div className="flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5 text-slate-400" />
                       <span>
-                        {formatTime(ev.start_at)} - {formatTime(ev.end_at)}
+                        {formatTime(ev.start_at)}
+                        {ev.end_at ? ` - ${formatTime(ev.end_at)}` : ''}
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5">

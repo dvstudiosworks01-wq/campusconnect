@@ -195,7 +195,8 @@ export function MyRegistrationsPage() {
                       <div className="flex items-center gap-1.5">
                         <Clock className="w-3.5 h-3.5 text-slate-400" />
                         <span>
-                          {formatTime(reg.event?.start_at)} - {formatTime(reg.event?.end_at)}
+                          {formatTime(reg.event?.start_at)}
+                          {reg.event?.end_at ? ` - ${formatTime(reg.event?.end_at)}` : ''}
                         </span>
                       </div>
                       <div className="flex items-center gap-1.5">

@@ -18,7 +18,7 @@ const eventFormSchema = z
     category_id: z.string().min(1, 'Please select an event category'),
     venue: z.string().min(2, 'Venue location is required'),
     start_at: z.string().min(1, 'Start date and time is required'),
-    end_at: z.string().min(1, 'End date and time is required'),
+    end_at: z.string().optional().or(z.literal('')),
     registration_deadline: z.string().min(1, 'Registration deadline is required'),
     capacity: z.coerce.number().int().positive('Capacity must be at least 1'),
     registration_type: z.literal('individual').default('individual'),
@@ -27,7 +27,9 @@ const eventFormSchema = z
     banner_url: z.string().url('Invalid image URL').optional().or(z.literal('')),
   })
   .refine(
-    (data) => new Date(data.start_at).getTime() < new Date(data.end_at).getTime(),
+    (data) =>
+      !data.end_at ||
+      new Date(data.start_at).getTime() < new Date(data.end_at).getTime(),
     {
       message: 'End date and time must be after the start date and time',
       path: ['end_at'],
@@ -116,7 +118,9 @@ export function CreateEventPage() {
         category_id: result.data.category_id,
         venue: result.data.venue,
         start_at: new Date(result.data.start_at).toISOString(),
-        end_at: new Date(result.data.end_at).toISOString(),
+        end_at: result.data.end_at
+          ? new Date(result.data.end_at).toISOString()
+          : new Date(new Date(result.data.start_at).getTime() + 3 * 60 * 60 * 1000).toISOString(),
         registration_deadline: new Date(result.data.registration_deadline).toISOString(),
         capacity: result.data.capacity,
         registration_type: 'individual',
@@ -252,12 +256,12 @@ export function CreateEventPage() {
               />
 
               <Input
-                label="End Date & Time"
+                label="End Date & Time (Optional)"
                 type="datetime-local"
                 value={formData.end_at}
                 onChange={(e) => handleChange('end_at', e.target.value)}
                 error={errors.end_at}
-                required
+                helperText="Optional — leave blank if duration is flexible"
               />
 
               <Input

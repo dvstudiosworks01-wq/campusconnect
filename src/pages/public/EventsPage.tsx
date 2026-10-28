@@ -92,7 +92,7 @@ export function EventsPage() {
 
       // Timing filter
       const startTime = new Date(ev.start_at).getTime()
-      const endTime = new Date(ev.end_at).getTime()
+      const endTime = ev.end_at ? new Date(ev.end_at).getTime() : startTime + 3 * 3600 * 1000
 
       if (selectedStatus === 'upcoming' && (startTime <= now || ev.status === 'completed')) {
         return false
@@ -205,7 +205,9 @@ export function EventsPage() {
       ) : filteredEvents.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEvents.map((event) => {
-            const isCompleted = event.status === 'completed' || new Date(event.end_at).getTime() < Date.now()
+            const isCompleted =
+              event.status === 'completed' ||
+              (event.end_at ? new Date(event.end_at).getTime() < Date.now() : false)
             const isDeadlinePassed = new Date(event.registration_deadline).getTime() < Date.now()
             const regCount = event.registration_count || 0
             const capacityRatio = Math.min(100, Math.round((regCount / event.capacity) * 100))

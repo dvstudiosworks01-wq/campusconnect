@@ -7,18 +7,39 @@ import { Badge } from '@/components/ui/Badge'
 import { useToast } from '@/components/ui/Toast'
 import { useAuth } from '@/context/AuthContext'
 
+const KEC_DEPARTMENTS = [
+  'Artificial Intelligence & Data Science',
+  'Artificial Intelligence & Machine Learning',
+  'Computer Science & Engineering',
+  'Computer Science & Design',
+  'Information Technology',
+  'Electronics & Communication Engineering',
+  'Electrical & Electronics Engineering',
+  'Mechanical Engineering',
+  'Mechatronics Engineering',
+  'Civil Engineering',
+  'Chemical Engineering',
+  'Food Technology',
+  'Management Studies (MBA)',
+  'Computer Applications (MCA)',
+]
+
 export function ProfilePage() {
   const { profile, updateProfileDetails } = useAuth()
   const { toast } = useToast()
 
   const [fullName, setFullName] = useState(profile?.full_name || '')
-  const [department, setDepartment] = useState(profile?.department || 'Computer Science & Engineering')
+  const [rollNumber, setRollNumber] = useState(profile?.roll_number || '')
+  const [phone, setPhone] = useState(profile?.phone || '')
+  const [department, setDepartment] = useState(profile?.department || KEC_DEPARTMENTS[2])
   const [yearOfStudy, setYearOfStudy] = useState(profile?.year_of_study ? String(profile.year_of_study) : '3')
   const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
     if (profile) {
       setFullName(profile.full_name || '')
+      if (profile.roll_number) setRollNumber(profile.roll_number)
+      if (profile.phone) setPhone(profile.phone)
       if (profile.department) setDepartment(profile.department)
       if (profile.year_of_study) setYearOfStudy(String(profile.year_of_study))
     }
@@ -36,6 +57,8 @@ export function ProfilePage() {
       full_name: fullName.trim(),
       department: department.trim(),
       year_of_study: parseInt(yearOfStudy, 10),
+      roll_number: rollNumber.trim().toUpperCase(),
+      phone: phone.trim(),
     })
 
     setIsSaving(false)
@@ -111,6 +134,25 @@ export function ProfilePage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                label="Roll / Register Number"
+                placeholder="e.g. 25ECR038"
+                value={rollNumber}
+                onChange={(e) => setRollNumber(e.target.value.toUpperCase())}
+                helperText="Official student roll or register code"
+              />
+
+              <Input
+                label="Mobile Phone Number"
+                type="tel"
+                placeholder="e.g. 9876543210"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                helperText="For event notifications and coordinators"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5 text-left">
                 <label className="block text-sm font-medium text-slate-700">Department</label>
                 <select
@@ -118,13 +160,11 @@ export function ProfilePage() {
                   onChange={(e) => setDepartment(e.target.value)}
                   className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 >
-                  <option value="Computer Science & Engineering">Computer Science & Engineering</option>
-                  <option value="Information Technology">Information Technology</option>
-                  <option value="Electronics & Communication">Electronics & Communication</option>
-                  <option value="Mechanical Engineering">Mechanical Engineering</option>
-                  <option value="Civil Engineering">Civil Engineering</option>
-                  <option value="Biotechnology">Biotechnology</option>
-                  <option value="Business Administration">Business Administration</option>
+                  {KEC_DEPARTMENTS.map((dept) => (
+                    <option key={dept} value={dept}>
+                      {dept}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -139,7 +179,7 @@ export function ProfilePage() {
                   <option value="2">Year 2 (Sophomore)</option>
                   <option value="3">Year 3 (Junior)</option>
                   <option value="4">Year 4 (Senior)</option>
-                  <option value="5">Year 5 (Postgraduate)</option>
+                  <option value="5">Year 5 (Postgraduate / MBA / MCA)</option>
                 </select>
               </div>
             </div>

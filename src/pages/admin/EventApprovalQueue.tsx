@@ -205,7 +205,8 @@ export function EventApprovalQueue() {
                     <div className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5 text-slate-400" />
                       <span>
-                        {formatDate(ev.start_at)} ({formatTime(ev.start_at)} - {formatTime(ev.end_at)})
+                        {formatDate(ev.start_at)} ({formatTime(ev.start_at)}
+                        {ev.end_at ? ` - ${formatTime(ev.end_at)}` : ''})
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5">

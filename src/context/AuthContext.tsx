@@ -62,8 +62,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return newProfile as Profile
         }
       } else if (data) {
-        setProfile(data as Profile)
-        return data as Profile
+        const fullProfile = {
+          ...data,
+          roll_number: userMeta?.roll_number || null,
+          phone: userMeta?.phone || null,
+        }
+        setProfile(fullProfile as Profile)
+        return fullProfile as Profile
       }
     } catch (err) {
       console.error('[CampusConnect] Error loading user profile:', err)
@@ -156,7 +161,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user || !profile) return false
     try {
       // Prevent client-side role tampering: exclude 'role' from self-update
-      const { role, id, created_at, ...allowedUpdates } = data as any
+      const { role, id, created_at, roll_number, phone, ...allowedUpdates } = data as any
 
       const { error } = await supabase
         .from('profiles')
@@ -167,6 +172,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.error('[CampusConnect] Profile update error:', error.message)
         return false
       }
+
+      // Store roll_number & phone in auth metadata
+      if (roll_number !== undefined || phone !== undefined) {
+        await supabase.auth.updateUser({
+          data: {
+            ...(roll_number !== undefined ? { roll_number } : {}),
+            ...(phone !== undefined ? { phone } : {}),
+            department: allowedUpdates.department,
+            year_of_study: allowedUpdates.year_of_study,
+          },
+        })
+      }
+
       await refreshProfile()
       return true
     } catch (err) {

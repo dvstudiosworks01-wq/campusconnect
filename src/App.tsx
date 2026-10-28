@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from '@/context/AuthContext'
 import { ToastProvider } from '@/components/ui/Toast'
+import { OnboardingModal } from '@/components/auth/OnboardingModal'
 
 // Layouts
 import { PublicLayout } from '@/components/layout/PublicLayout'
@@ -48,6 +49,7 @@ export function App() {
     <BrowserRouter>
       <AuthProvider>
         <ToastProvider>
+          <OnboardingModal />
           <Routes>
             {/* PUBLIC ROUTES */}
             <Route element={<PublicLayout />}>

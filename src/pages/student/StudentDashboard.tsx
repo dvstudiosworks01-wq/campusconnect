@@ -92,7 +92,13 @@ export function StudentDashboard() {
         if (registrations) {
           const now = new Date().getTime()
           const upcoming = registrations
-            .filter((r) => r.event && new Date(r.event.end_at).getTime() >= now)
+            .filter(
+              (r) =>
+                r.event &&
+                (r.event.end_at
+                  ? new Date(r.event.end_at).getTime() >= now
+                  : new Date(r.event.start_at).getTime() + 3 * 3600 * 1000 >= now)
+            )
             .sort((a, b) => new Date(a.event.start_at).getTime() - new Date(b.event.start_at).getTime())
             .slice(0, 3)
 

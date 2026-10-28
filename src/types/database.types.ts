@@ -27,6 +27,8 @@ export interface Profile {
   avatar_url: string | null
   department: string | null
   year_of_study: number | null
+  roll_number?: string | null
+  phone?: string | null
   role: UserRole
   created_at: string
 }
@@ -46,7 +48,7 @@ export interface EventItem {
   category_id: string
   venue: string
   start_at: string
-  end_at: string
+  end_at?: string | null
   registration_deadline: string
   capacity: number
   registration_type: RegistrationType

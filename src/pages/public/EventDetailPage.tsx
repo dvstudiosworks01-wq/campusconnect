@@ -176,7 +176,9 @@ export function EventDetailPage() {
 
   if (!event) return null
 
-  const isCompleted = event.status === 'completed' || new Date(event.end_at).getTime() < Date.now()
+  const isCompleted =
+    event.status === 'completed' ||
+    (event.end_at ? new Date(event.end_at).getTime() < Date.now() : false)
   const isDeadlinePassed = new Date(event.registration_deadline).getTime() < Date.now()
   const isFull = registrationCount >= event.capacity
   const capacityPercent = Math.min(100, Math.round((registrationCount / event.capacity) * 100))
@@ -235,7 +237,8 @@ export function EventDetailPage() {
             <div className="flex items-center gap-1.5">
               <Clock className="w-4 h-4 text-primary-400" />
               <span>
-                {formatTime(event.start_at)} - {formatTime(event.end_at)}
+                {formatTime(event.start_at)}
+                {event.end_at ? ` - ${formatTime(event.end_at)}` : ''}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -254,10 +257,12 @@ export function EventDetailPage() {
             <h4 className="text-sm font-bold text-rose-950">Schedule Conflict Detected</h4>
             <p className="text-xs text-rose-800 leading-relaxed">
               You are already registered for{' '}
-              <strong className="underline">{conflictingEvent.title}</strong>, which runs from{' '}
-              <strong>{formatTime(conflictingEvent.start_at)}</strong> to{' '}
-              <strong>{formatTime(conflictingEvent.end_at)}</strong> on{' '}
-              <strong>{formatDate(conflictingEvent.start_at)}</strong>. Server rules prevent overlapping event
+              <strong className="underline">{conflictingEvent.title}</strong>, which starts at{' '}
+              <strong>{formatTime(conflictingEvent.start_at)}</strong>
+              {conflictingEvent.end_at ? (
+                <> to <strong>{formatTime(conflictingEvent.end_at)}</strong></>
+              ) : null}{' '}
+              on <strong>{formatDate(conflictingEvent.start_at)}</strong>. Server rules prevent overlapping event
               commitments to maintain attendance integrity.
             </p>
           </div>

@@ -55,14 +55,14 @@ export function formatTime(dateString: string | null | undefined): string {
  */
 export function hasTimeConflict(
   newStart: string | Date,
-  newEnd: string | Date,
+  newEnd: string | Date | null | undefined,
   existingStart: string | Date,
-  existingEnd: string | Date
+  existingEnd: string | Date | null | undefined
 ): boolean {
   const nStart = new Date(newStart).getTime()
-  const nEnd = new Date(newEnd).getTime()
+  const nEnd = newEnd ? new Date(newEnd).getTime() : nStart + 3 * 3600 * 1000
   const eStart = new Date(existingStart).getTime()
-  const eEnd = new Date(existingEnd).getTime()
+  const eEnd = existingEnd ? new Date(existingEnd).getTime() : eStart + 3 * 3600 * 1000
 
   return nStart < eEnd && nEnd > eStart
 }

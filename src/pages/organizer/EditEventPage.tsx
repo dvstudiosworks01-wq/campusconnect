@@ -97,6 +97,14 @@ export function EditEventPage() {
   const handleUpdate = async (nextStatus?: string) => {
     if (!user || !id) return
 
+    if (
+      formData.end_at &&
+      new Date(formData.end_at).getTime() <= new Date(formData.start_at).getTime()
+    ) {
+      toast({ type: 'warning', title: 'End time must be after start time' })
+      return
+    }
+
     setIsSubmitting(true)
     try {
       const payload: any = {
@@ -105,7 +113,9 @@ export function EditEventPage() {
         category_id: formData.category_id,
         venue: formData.venue,
         start_at: new Date(formData.start_at).toISOString(),
-        end_at: new Date(formData.end_at).toISOString(),
+        end_at: formData.end_at
+          ? new Date(formData.end_at).toISOString()
+          : new Date(new Date(formData.start_at).getTime() + 3 * 60 * 60 * 1000).toISOString(),
         registration_deadline: new Date(formData.registration_deadline).toISOString(),
         capacity: formData.capacity,
         banner_url: formData.banner_url || null,
@@ -228,11 +238,11 @@ export function EditEventPage() {
                 required
               />
               <Input
-                label="End Time"
+                label="End Time (Optional)"
                 type="datetime-local"
                 value={formData.end_at}
                 onChange={(e) => handleChange('end_at', e.target.value)}
-                required
+                helperText="Leave blank if duration is flexible"
               />
               <Input
                 label="Deadline"
