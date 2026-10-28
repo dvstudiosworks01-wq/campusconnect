@@ -7,7 +7,6 @@ import {
   ShieldCheck,
   ArrowRight,
   Users,
-  Sparkles,
   MapPin,
   Clock,
   CheckCircle,
@@ -38,11 +37,14 @@ export function LandingPage() {
       }
 
       try {
-        // Query published events
+        const now = new Date().toISOString()
+
+        // Query only active events (published and not yet ended)
         const { data: events } = await supabase
           .from('events')
           .select('*, category:event_categories(name)')
           .eq('status', 'published')
+          .gte('end_at', now)
           .order('start_at', { ascending: true })
           .limit(3)
 
@@ -55,7 +57,11 @@ export function LandingPage() {
           { count: certCount },
           { count: studentCount },
         ] = await Promise.all([
-          supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'published'),
+          supabase
+            .from('events')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'published')
+            .gte('end_at', now),
           supabase.from('registrations').select('*', { count: 'exact', head: true }).eq('status', 'confirmed'),
           supabase.from('certificates').select('*', { count: 'exact', head: true }).is('revoked_at', null),
           supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'student'),
@@ -79,15 +85,20 @@ export function LandingPage() {
 
   return (
     <div className="space-y-16 pb-20">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-primary-950 via-slate-900 to-slate-950 text-white pt-20 pb-24 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(59,130,246,0.15),transparent)] pointer-events-none" />
+      {/* Hero Section with KEC Logo's Institutional Royal Blue & Emerald Green */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#061838] via-[#092642] to-[#043022] text-white pt-20 pb-24 px-4 sm:px-6 lg:px-8 border-b border-emerald-950/40">
+        {/* KEC Blue ambient glow (top left) */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/25 rounded-full blur-3xl pointer-events-none" />
+        {/* KEC Emerald Green ambient glow (bottom right) */}
+        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-500/25 rounded-full blur-3xl pointer-events-none" />
+        {/* Center radial overlay for clarity */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(14,165,233,0.12),transparent_70%)] pointer-events-none" />
+
         <div className="max-w-6xl mx-auto text-center relative z-10 space-y-6">
           <Badge
             variant="default"
-            className="bg-primary-500/10 text-primary-300 border-primary-500/30 px-3.5 py-1 text-xs uppercase tracking-wider font-semibold inline-flex items-center gap-1.5"
+            className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 px-4 py-1.5 text-xs uppercase tracking-wider font-semibold inline-flex items-center shadow-sm backdrop-blur-sm"
           >
-            <Sparkles className="w-3.5 h-3.5" />
             Kongu Engineering College, Perundurai
           </Badge>
 
@@ -103,7 +114,7 @@ export function LandingPage() {
             <Button
               size="lg"
               onClick={() => navigate('/events')}
-              className="bg-primary-600 hover:bg-primary-500 text-white shadow-lg shadow-primary-600/30 font-semibold px-6"
+              className="bg-gradient-to-r from-blue-600 via-primary-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white shadow-lg shadow-emerald-950/40 font-semibold px-6 border-0"
               rightIcon={<ArrowRight className="w-4 h-4" />}
             >
               Explore College Events
@@ -112,7 +123,7 @@ export function LandingPage() {
               variant="outline"
               size="lg"
               onClick={() => navigate('/verify-certificate')}
-              className="bg-slate-900/80 hover:bg-slate-800 text-slate-200 border-slate-700 shadow-sm"
+              className="bg-slate-900/80 hover:bg-slate-800 text-slate-200 border-emerald-800/50 shadow-sm"
               leftIcon={<ShieldCheck className="w-4 h-4 text-emerald-400" />}
             >
               Verify Certificate
@@ -120,37 +131,37 @@ export function LandingPage() {
           </div>
         </div>
 
-        {/* Real-time stats row */}
+        {/* Real-time stats row with KEC Blue & Green Accents */}
         <div className="max-w-5xl mx-auto mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 px-2">
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 text-center backdrop-blur-sm">
+          <div className="bg-slate-900/70 border border-blue-900/40 rounded-2xl p-5 text-center backdrop-blur-md shadow-lg">
             <div className="text-2xl sm:text-3xl font-extrabold text-white">
               {stats.eventsCount}
             </div>
-            <div className="text-xs text-slate-400 uppercase tracking-wider font-medium mt-1">
+            <div className="text-xs text-blue-300 uppercase tracking-wider font-semibold mt-1">
               Active Events
             </div>
           </div>
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 text-center backdrop-blur-sm">
-            <div className="text-2xl sm:text-3xl font-extrabold text-primary-400">
+          <div className="bg-slate-900/70 border border-blue-800/40 rounded-2xl p-5 text-center backdrop-blur-md shadow-lg">
+            <div className="text-2xl sm:text-3xl font-extrabold text-sky-400">
               {stats.registrationsCount}
             </div>
-            <div className="text-xs text-slate-400 uppercase tracking-wider font-medium mt-1">
+            <div className="text-xs text-sky-200 uppercase tracking-wider font-semibold mt-1">
               Registrations
             </div>
           </div>
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 text-center backdrop-blur-sm">
+          <div className="bg-slate-900/70 border border-emerald-900/40 rounded-2xl p-5 text-center backdrop-blur-md shadow-lg">
             <div className="text-2xl sm:text-3xl font-extrabold text-emerald-400">
               {stats.certificatesCount}
             </div>
-            <div className="text-xs text-slate-400 uppercase tracking-wider font-medium mt-1">
+            <div className="text-xs text-emerald-300 uppercase tracking-wider font-semibold mt-1">
               Certificates Issued
             </div>
           </div>
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 text-center backdrop-blur-sm">
-            <div className="text-2xl sm:text-3xl font-extrabold text-amber-400">
+          <div className="bg-slate-900/70 border border-emerald-800/40 rounded-2xl p-5 text-center backdrop-blur-md shadow-lg">
+            <div className="text-2xl sm:text-3xl font-extrabold text-teal-300">
               {stats.studentsCount}
             </div>
-            <div className="text-xs text-slate-400 uppercase tracking-wider font-medium mt-1">
+            <div className="text-xs text-teal-200 uppercase tracking-wider font-semibold mt-1">
               Campus Scholars
             </div>
           </div>
