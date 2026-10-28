@@ -301,29 +301,43 @@ export function CertificateManagerPage() {
       doc.setTextColor(100, 116, 139)
       doc.text(`Issued on ${issueDate}`, 148.5, 136, { align: 'center' })
 
-      // QR Code
-      doc.addImage(qrDataUrl, 'PNG', 25, 142, 35, 35)
-      doc.setFontSize(8)
-      doc.setTextColor(148, 163, 184)
-      doc.text('Scan to verify seal', 42.5, 180, { align: 'center' })
+      // Embed Verification QR Code in bottom-left
+      doc.addImage(qrDataUrl, 'PNG', 24, 142, 32, 32)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(7.5)
+      doc.setTextColor(100, 116, 139)
+      doc.text('Scan to verify credential', 40, 178, { align: 'center' })
 
-      // Signature Lines
+      // Signatures
+      // Signature 1
       doc.setDrawColor(148, 163, 184)
       doc.setLineWidth(0.5)
-      doc.line(180, 168, 260, 168)
+      doc.line(160, 166, 210, 166)
       doc.setFont('helvetica', 'bold')
       doc.setFontSize(10)
       doc.setTextColor(15, 23, 42)
-      doc.text('Principal / Faculty Convener', 220, 174, { align: 'center' })
+      doc.text('Faculty Convener', 185, 172, { align: 'center' })
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(8)
       doc.setTextColor(100, 116, 139)
-      doc.text('Kongu Engineering College', 220, 179, { align: 'center' })
+      doc.text('Campus Events Board', 185, 177, { align: 'center' })
 
+      // Signature 2
+      doc.line(220, 166, 270, 166)
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(10)
+      doc.setTextColor(15, 23, 42)
+      doc.text('Dean of Academics', 245, 172, { align: 'center' })
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(8)
-      doc.setTextColor(148, 163, 184)
-      doc.text(`Certificate ID: ${certNumber}`, 148.5, 192, { align: 'center' })
+      doc.setTextColor(100, 116, 139)
+      doc.text('Kongu Engineering College', 245, 177, { align: 'center' })
+
+      // Prominent, properly-bounded Certificate ID centered at footer
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(8.5)
+      doc.setTextColor(100, 116, 139)
+      doc.text(`CERTIFICATE ID: #${certNumber}`, 148.5, 188, { align: 'center' })
 
       doc.save(`${certNumber}_${studentName.replace(/\s+/g, '_')}.pdf`)
       toast({

@@ -176,7 +176,7 @@ export function CreateEventPage() {
             <div className="sm:col-span-2">
               <Input
                 label="Event Title"
-                placeholder="e.g. Apex Annual Hackathon 2026"
+                placeholder="e.g. Kongu Annual Hackathon 2026"
                 value={formData.title}
                 onChange={(e) => handleChange('title', e.target.value)}
                 error={errors.title}
