@@ -100,7 +100,7 @@ export function EventResultsPage() {
           .order('rank', { ascending: true }),
         supabase
           .from('registrations')
-          .select('student_id, student:profiles(id, full_name, email)')
+          .select('student_id, student:profiles!registrations_student_id_fkey(id, full_name, email)')
           .eq('event_id', eventId)
           .eq('status', 'confirmed'),
         supabase

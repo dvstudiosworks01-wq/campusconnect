@@ -153,7 +153,7 @@ export function QRAttendancePage() {
             .from('attendance')
             .select(`
               *,
-              student:profiles(full_name, department)
+              student:profiles!attendance_student_id_fkey(full_name, department)
             `)
             .eq('event_id', eventId)
             .order('checked_in_at', { ascending: false })
@@ -316,7 +316,7 @@ export function QRAttendancePage() {
         .from('registrations')
         .select(`
           student_id,
-          student:profiles(id, full_name, email, department)
+          student:profiles!registrations_student_id_fkey(id, full_name, email, department)
         `)
         .eq('event_id', selectedEventId)
         .eq('status', 'confirmed')
