@@ -37,7 +37,7 @@ const FACULTY_DESIGNATIONS = [
 
 export function OnboardingModal() {
   const navigate = useNavigate()
-  const { user, profile, updateProfileDetails, refreshProfile, isLoading } = useAuth()
+  const { user, profile, isAccountDeleted, updateProfileDetails, refreshProfile, isLoading } = useAuth()
   const { toast } = useToast()
 
   const [isOpen, setIsOpen] = useState(false)
@@ -54,7 +54,7 @@ export function OnboardingModal() {
 
   // Check if current user is missing necessary details
   useEffect(() => {
-    if (!isLoading && user && profile) {
+    if (!isLoading && user && profile && !isAccountDeleted) {
       const isStaffOrAdmin = profile.role === 'organizer' || profile.role === 'admin'
       const isMissingDetails = isStaffOrAdmin
         ? !profile.department

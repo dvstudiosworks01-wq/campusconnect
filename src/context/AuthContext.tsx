@@ -10,6 +10,7 @@ interface AuthContextType {
   role: UserRole | null
   isLoading: boolean
   isConfigured: boolean
+  isAccountDeleted: boolean
   signInWithGoogle: () => Promise<void>
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
@@ -23,6 +24,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isAccountDeleted, setIsAccountDeleted] = useState<boolean>(false)
 
   const fetchProfile = useCallback(async (userId: string, userMeta?: any, userEmail?: string) => {
     if (!isSupabaseConfigured) {
@@ -31,6 +33,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
+      // 1. Verify user exists in Supabase Auth by checking live auth status
+      const { data: userData, error: userError } = await supabase.auth.getUser()
+      if (userError || !userData?.user) {
+        console.warn('[CampusConnect] User is not recognized by Supabase Auth (likely deleted):', userError)
+        await supabase.auth.signOut()
+        setUser(null)
+        setSession(null)
+        setProfile(null)
+        setIsAccountDeleted(true)
+        return null
+      }
+
+      // 2. Fetch profile from database
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -59,19 +74,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (!insertError && newProfile) {
           setProfile(newProfile as Profile)
+          setIsAccountDeleted(false)
           return newProfile as Profile
+        } else {
+          // If insert fails, user was deleted or restricted
+          console.warn('[CampusConnect] Profile insertion failed (account likely deregistered):', insertError)
+          await supabase.auth.signOut()
+          setUser(null)
+          setSession(null)
+          setProfile(null)
+          setIsAccountDeleted(true)
+          return null
         }
       } else if (data) {
         const fullProfile = {
           ...data,
-          roll_number: userMeta?.roll_number || null,
-          phone: userMeta?.phone || null,
+          roll_number: userMeta?.roll_number || (data as any).roll_number || null,
+          designation: userMeta?.designation || (data as any).designation || null,
+          phone: userMeta?.phone || (data as any).phone || null,
         }
         setProfile(fullProfile as Profile)
+        setIsAccountDeleted(false)
         return fullProfile as Profile
+      } else {
+        await supabase.auth.signOut()
+        setUser(null)
+        setSession(null)
+        setProfile(null)
+        setIsAccountDeleted(true)
+        return null
       }
     } catch (err) {
       console.error('[CampusConnect] Error loading user profile:', err)
+      await supabase.auth.signOut()
+      setUser(null)
+      setSession(null)
+      setProfile(null)
+      setIsAccountDeleted(true)
     }
     return null
   }, [])
@@ -155,6 +194,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null)
     setSession(null)
     setProfile(null)
+    setIsAccountDeleted(false)
   }
 
   const updateProfileDetails = async (data: Partial<Profile>): Promise<boolean> => {
@@ -194,7 +234,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const role: UserRole | null = profile?.role ?? (user ? 'student' : null)
+  const role: UserRole | null = profile?.role ?? null
 
   return (
     <AuthContext.Provider
@@ -205,6 +245,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         role,
         isLoading,
         isConfigured: isSupabaseConfigured,
+        isAccountDeleted,
         signInWithGoogle,
         signOut,
         refreshProfile,
