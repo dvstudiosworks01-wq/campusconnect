@@ -9,7 +9,6 @@ import {
   ArrowRight,
   CheckCircle2,
   AlertCircle,
-  Sparkles,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -155,7 +154,7 @@ export function StudentDashboard() {
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="border-slate-200 shadow-subtle">
           <CardContent className="pt-5 flex items-center justify-between">
             <div>
@@ -193,23 +192,6 @@ export function StudentDashboard() {
               </h3>
             </div>
             <div className="h-10 w-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <Award className="w-5 h-5" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200 shadow-subtle">
-          <CardContent className="pt-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-                Leaderboard Points
-              </p>
-              <h3 className="text-2xl font-bold text-primary-700 mt-1 flex items-center gap-1">
-                <Sparkles className="w-4 h-4 text-primary-500" />
-                {stats.pointsCount}
-              </h3>
-            </div>
-            <div className="h-10 w-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center">
               <Award className="w-5 h-5" />
             </div>
           </CardContent>

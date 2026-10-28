@@ -40,13 +40,6 @@ export function Navbar() {
             Events
           </Link>
           <Link
-            to="/leaderboard"
-            className="flex items-center gap-1.5 hover:text-primary-600 transition-colors"
-          >
-            <Award className="w-4 h-4" />
-            Leaderboard
-          </Link>
-          <Link
             to="/verify-certificate"
             className="hover:text-primary-600 transition-colors"
           >

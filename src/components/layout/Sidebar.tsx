@@ -40,7 +40,6 @@ export function Sidebar({ onCloseMobile }: SidebarProps) {
     { label: 'My Registrations', to: '/student/registrations', icon: Calendar },
     { label: 'Attendance', to: '/student/attendance', icon: QrCode },
     { label: 'My Certificates', to: '/student/certificates', icon: Award },
-    { label: 'Leaderboard', to: '/leaderboard', icon: Trophy },
     { label: 'My Profile', to: '/student/profile', icon: Settings },
   ]
 
@@ -58,7 +57,7 @@ export function Sidebar({ onCloseMobile }: SidebarProps) {
     { label: 'Admin Dashboard', to: '/admin', icon: BarChart3 },
     { label: 'Approval Queue', to: '/admin/approvals', icon: Calendar },
     { label: 'User & Roles', to: '/admin/users', icon: Users },
-    { label: 'Categories & Rules', to: '/admin/categories', icon: Layers },
+    { label: 'Event Categories', to: '/admin/categories', icon: Layers },
     { label: 'Certificate Audit', to: '/admin/certificates', icon: FileCheck2 },
     { label: 'Notification Logs', to: '/admin/notifications', icon: BellRing },
     { label: 'System Audit Logs', to: '/admin/audit-logs', icon: FileText },
@@ -158,14 +157,6 @@ export function Sidebar({ onCloseMobile }: SidebarProps) {
         >
           <ExternalLink className="w-4 h-4 shrink-0" />
           <span>Public Events</span>
-        </NavLink>
-        <NavLink
-          to="/leaderboard"
-          onClick={onCloseMobile}
-          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800/60"
-        >
-          <Award className="w-4 h-4 shrink-0" />
-          <span>Leaderboard</span>
         </NavLink>
       </div>
 

@@ -35,11 +35,6 @@ export function PublicLayout() {
                 </Link>
               </li>
               <li>
-                <Link to="/leaderboard" className="hover:text-primary-600 transition-colors">
-                  Campus Leaderboard
-                </Link>
-              </li>
-              <li>
                 <Link to="/verify-certificate" className="hover:text-primary-600 transition-colors">
                   Public Certificate Verification
                 </Link>

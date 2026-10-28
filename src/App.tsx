@@ -13,7 +13,6 @@ import { LandingPage } from '@/pages/public/LandingPage'
 import { EventsPage } from '@/pages/public/EventsPage'
 import { EventDetailPage } from '@/pages/public/EventDetailPage'
 import { CertificateVerifyPage } from '@/pages/public/CertificateVerifyPage'
-import { LeaderboardPage } from '@/pages/public/LeaderboardPage'
 import { LoginPage } from '@/pages/public/LoginPage'
 import { AuthCallbackPage } from '@/pages/public/AuthCallbackPage'
 
@@ -57,7 +56,7 @@ export function App() {
               <Route path="/events" element={<EventsPage />} />
               <Route path="/events/:id" element={<EventDetailPage />} />
               <Route path="/verify-certificate" element={<CertificateVerifyPage />} />
-              <Route path="/leaderboard" element={<LeaderboardPage />} />
+              <Route path="/leaderboard" element={<Navigate to="/events" replace />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/auth/callback" element={<AuthCallbackPage />} />
             </Route>

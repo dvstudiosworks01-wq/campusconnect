@@ -204,7 +204,7 @@ export function EventResultsPage() {
             Publish Competition Results
           </h2>
           <p className="text-sm text-slate-500 mt-0.5">
-            Award podium ranks, score ratings, and configure leaderboard points.
+            Award podium ranks, scores, and official position certificates.
           </p>
         </div>
 
