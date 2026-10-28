@@ -28,6 +28,7 @@ export interface Profile {
   department: string | null
   year_of_study: number | null
   roll_number?: string | null
+  designation?: string | null
   phone?: string | null
   role: UserRole
   created_at: string

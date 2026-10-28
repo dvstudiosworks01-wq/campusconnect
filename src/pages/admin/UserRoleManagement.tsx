@@ -270,7 +270,7 @@ export function UserRoleManagement() {
                     <td className="py-3.5 px-4 text-slate-600">
                       <div>{p.department || 'General'}</div>
                       <div className="text-slate-400 text-[11px]">
-                        {p.year_of_study ? `Year ${p.year_of_study}` : '—'}
+                        {p.designation ? p.designation : p.year_of_study ? `Year ${p.year_of_study}` : '—'}
                       </div>
                     </td>
                     <td className="py-3.5 px-4">

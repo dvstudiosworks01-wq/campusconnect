@@ -173,12 +173,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return false
       }
 
-      // Store roll_number & phone in auth metadata
-      if (roll_number !== undefined || phone !== undefined) {
+      // Store roll_number, phone & designation in auth metadata
+      if (roll_number !== undefined || phone !== undefined || (data as any).designation !== undefined) {
         await supabase.auth.updateUser({
           data: {
             ...(roll_number !== undefined ? { roll_number } : {}),
             ...(phone !== undefined ? { phone } : {}),
+            ...((data as any).designation !== undefined ? { designation: (data as any).designation } : {}),
             department: allowedUpdates.department,
             year_of_study: allowedUpdates.year_of_study,
           },
