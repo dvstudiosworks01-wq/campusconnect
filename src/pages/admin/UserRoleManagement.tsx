@@ -8,6 +8,7 @@ import {
   UserCheck,
   Check,
   AlertCircle,
+  Trash2,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -32,6 +33,10 @@ export function UserRoleManagement() {
   const [targetUser, setTargetUser] = useState<Profile | null>(null)
   const [selectedRole, setSelectedRole] = useState<UserRole>('student')
   const [isUpdating, setIsUpdating] = useState(false)
+
+  // User deletion modal state
+  const [userToDelete, setUserToDelete] = useState<Profile | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const fetchUsers = async () => {
     if (!isSupabaseConfigured) {
@@ -116,6 +121,55 @@ export function UserRoleManagement() {
       })
     } finally {
       setIsUpdating(false)
+    }
+  }
+
+  const handleOpenDeleteModal = (profile: Profile) => {
+    if (profile.id === user?.id) {
+      toast({
+        type: 'warning',
+        title: 'Operation Denied',
+        message: 'You cannot delete your own administrative account.',
+      })
+      return
+    }
+    setUserToDelete(profile)
+  }
+
+  const handleDeleteUserSubmit = async () => {
+    if (!userToDelete || !user) return
+    if (userToDelete.id === user.id) return
+
+    setIsDeleting(true)
+    try {
+      const { error } = await supabase.rpc('admin_delete_user', {
+        target_user_id: userToDelete.id,
+      })
+
+      if (error) {
+        if (error.message.includes('function') && error.message.includes('not exist')) {
+          throw new Error('Database migration pending. Please run the cascade deletion SQL script in Supabase SQL Editor.')
+        }
+        throw error
+      }
+
+      toast({
+        type: 'success',
+        title: 'User Deleted',
+        message: `${userToDelete.full_name} (${userToDelete.email}) was removed from the database.`,
+      })
+
+      setProfiles((prev) => prev.filter((p) => p.id !== userToDelete.id))
+      setUserToDelete(null)
+    } catch (err: any) {
+      console.error('Delete user error:', err)
+      toast({
+        type: 'error',
+        title: 'Deletion Failed',
+        message: err.message || 'Could not delete user. Check database constraints.',
+      })
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -228,15 +282,28 @@ export function UserRoleManagement() {
                       {new Date(p.created_at).toLocaleDateString()}
                     </td>
                     <td className="py-3.5 px-4 text-right">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-xs h-7 px-2"
-                        onClick={() => handleOpenRoleModal(p)}
-                        leftIcon={<Shield className="w-3.5 h-3.5 text-primary-600" />}
-                      >
-                        Change Role
-                      </Button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-xs h-7 px-2"
+                          onClick={() => handleOpenRoleModal(p)}
+                          leftIcon={<Shield className="w-3.5 h-3.5 text-primary-600" />}
+                        >
+                          Change Role
+                        </Button>
+                        {p.id !== user?.id && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-xs h-7 px-2 text-rose-600 hover:text-rose-700 hover:bg-rose-50"
+                            onClick={() => handleOpenDeleteModal(p)}
+                            title="Delete user from database"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -287,6 +354,49 @@ export function UserRoleManagement() {
             </Button>
           </div>
         </form>
+      </Modal>
+
+      {/* DELETE USER CONFIRMATION MODAL */}
+      <Modal
+        isOpen={Boolean(userToDelete)}
+        onClose={() => !isDeleting && setUserToDelete(null)}
+        title="Delete User Account"
+        description="Permanently remove this user and all associated college records from the database."
+      >
+        <div className="space-y-4 text-left">
+          <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800 space-y-2">
+            <p className="font-semibold flex items-center gap-1.5 text-rose-900">
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+              Permanent Action Warning
+            </p>
+            <p>
+              You are about to delete <strong>{userToDelete?.full_name}</strong> (<code>{userToDelete?.email}</code>).
+            </p>
+            <p className="text-[11px] text-rose-700">
+              This will cascade-delete their profile, registrations, attendance records, and any events they organized. This action cannot be reversed.
+            </p>
+          </div>
+
+          <div className="pt-2 flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              disabled={isDeleting}
+              onClick={() => setUserToDelete(null)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              isLoading={isDeleting}
+              onClick={handleDeleteUserSubmit}
+              leftIcon={<Trash2 className="w-3.5 h-3.5" />}
+            >
+              Delete User Permanently
+            </Button>
+          </div>
+        </div>
       </Modal>
     </div>
   )
