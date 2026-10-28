@@ -20,12 +20,7 @@ import type { EventItem } from '@/types/database.types'
 
 export function LandingPage() {
   const navigate = useNavigate()
-  const [stats, setStats] = useState({
-    eventsCount: 0,
-    registrationsCount: 0,
-    certificatesCount: 0,
-    studentsCount: 0,
-  })
+  const [activeEventsCount, setActiveEventsCount] = useState(0)
   const [featuredEvents, setFeaturedEvents] = useState<EventItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -50,29 +45,14 @@ export function LandingPage() {
 
         if (events) setFeaturedEvents(events as any)
 
-        // Query metrics
-        const [
-          { count: evCount },
-          { count: regCount },
-          { count: certCount },
-          { count: studentCount },
-        ] = await Promise.all([
-          supabase
-            .from('events')
-            .select('*', { count: 'exact', head: true })
-            .eq('status', 'published')
-            .gte('end_at', now),
-          supabase.from('registrations').select('*', { count: 'exact', head: true }).eq('status', 'confirmed'),
-          supabase.from('certificates').select('*', { count: 'exact', head: true }).is('revoked_at', null),
-          supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'student'),
-        ])
+        // Query active events count
+        const { count: evCount } = await supabase
+          .from('events')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'published')
+          .gte('end_at', now)
 
-        setStats({
-          eventsCount: evCount || 0,
-          registrationsCount: regCount || 0,
-          certificatesCount: certCount || 0,
-          studentsCount: studentCount || 0,
-        })
+        setActiveEventsCount(evCount || 0)
       } catch (err) {
         console.error('Error loading landing data:', err)
       } finally {
@@ -131,38 +111,14 @@ export function LandingPage() {
           </div>
         </div>
 
-        {/* Real-time stats row with KEC Blue & Green Accents */}
-        <div className="max-w-5xl mx-auto mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 px-2">
+        {/* Active Events counter */}
+        <div className="max-w-xs mx-auto mt-14 px-2">
           <div className="bg-slate-900/70 border border-blue-900/40 rounded-2xl p-5 text-center backdrop-blur-md shadow-lg">
-            <div className="text-2xl sm:text-3xl font-extrabold text-white">
-              {stats.eventsCount}
+            <div className="text-3xl sm:text-4xl font-extrabold text-white">
+              {activeEventsCount}
             </div>
             <div className="text-xs text-blue-300 uppercase tracking-wider font-semibold mt-1">
               Active Events
-            </div>
-          </div>
-          <div className="bg-slate-900/70 border border-blue-800/40 rounded-2xl p-5 text-center backdrop-blur-md shadow-lg">
-            <div className="text-2xl sm:text-3xl font-extrabold text-sky-400">
-              {stats.registrationsCount}
-            </div>
-            <div className="text-xs text-sky-200 uppercase tracking-wider font-semibold mt-1">
-              Registrations
-            </div>
-          </div>
-          <div className="bg-slate-900/70 border border-emerald-900/40 rounded-2xl p-5 text-center backdrop-blur-md shadow-lg">
-            <div className="text-2xl sm:text-3xl font-extrabold text-emerald-400">
-              {stats.certificatesCount}
-            </div>
-            <div className="text-xs text-emerald-300 uppercase tracking-wider font-semibold mt-1">
-              Certificates Issued
-            </div>
-          </div>
-          <div className="bg-slate-900/70 border border-emerald-800/40 rounded-2xl p-5 text-center backdrop-blur-md shadow-lg">
-            <div className="text-2xl sm:text-3xl font-extrabold text-teal-300">
-              {stats.studentsCount}
-            </div>
-            <div className="text-xs text-teal-200 uppercase tracking-wider font-semibold mt-1">
-              Campus Scholars
             </div>
           </div>
         </div>
