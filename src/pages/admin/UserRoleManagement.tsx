@@ -147,8 +147,12 @@ export function UserRoleManagement() {
       })
 
       if (error) {
-        if (error.message.includes('function') && error.message.includes('not exist')) {
-          throw new Error('Database migration pending. Please run the cascade deletion SQL script in Supabase SQL Editor.')
+        if (
+          error.message.includes('schema cache') ||
+          error.message.includes('admin_delete_user') ||
+          error.message.includes('not exist')
+        ) {
+          throw new Error('Please run the SQL migration script in your Supabase SQL Editor to enable user deletion.')
         }
         throw error
       }
