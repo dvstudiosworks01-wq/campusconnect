@@ -67,19 +67,29 @@ export function LandingPage() {
     <div className="space-y-16 pb-20">
       {/* Hero Section with KEC Logo's Institutional Royal Blue & Emerald Green */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#061838] via-[#092642] to-[#043022] text-white pt-20 pb-24 px-4 sm:px-6 lg:px-8 border-b border-emerald-950/40">
+        {/* KEC Logo Background Watermark / Emblem */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
+          <img
+            src="/kec-logo-transparent.png"
+            alt="Kongu Engineering College Logo Background"
+            className="w-[480px] sm:w-[600px] lg:w-[680px] max-w-[90vw] object-contain opacity-20 filter brightness-110 drop-shadow-[0_0_80px_rgba(14,165,233,0.35)] -translate-y-2 sm:-translate-y-4"
+          />
+        </div>
+
         {/* KEC Blue ambient glow (top left) */}
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/25 rounded-full blur-3xl pointer-events-none" />
         {/* KEC Emerald Green ambient glow (bottom right) */}
         <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-500/25 rounded-full blur-3xl pointer-events-none" />
         {/* Center radial overlay for clarity */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(14,165,233,0.12),transparent_70%)] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(14,165,233,0.10),transparent_70%)] pointer-events-none" />
 
         <div className="max-w-6xl mx-auto text-center relative z-10 space-y-6">
           <Badge
             variant="default"
-            className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 px-4 py-1.5 text-xs uppercase tracking-wider font-semibold inline-flex items-center shadow-sm backdrop-blur-sm"
+            className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 px-3.5 py-1.5 text-xs uppercase tracking-wider font-semibold inline-flex items-center gap-2 shadow-sm backdrop-blur-sm"
           >
-            Kongu Engineering College, Perundurai
+            <img src="/kec-logo-transparent.png" alt="KEC" className="w-4 h-4 object-contain inline-block" />
+            <span>Kongu Engineering College, Perundurai</span>
           </Badge>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight max-w-4xl mx-auto leading-tight sm:leading-none">
