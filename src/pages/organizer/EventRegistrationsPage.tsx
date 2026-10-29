@@ -10,6 +10,7 @@ import {
   UserCheck,
   Calendar,
   Clock,
+  Bell,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -18,6 +19,7 @@ import { Skeleton, EmptyState } from '@/components/ui/Skeleton'
 import { useToast } from '@/components/ui/Toast'
 import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 import { formatDate, formatDateTime, formatTime } from '@/lib/utils'
+import { SendNotificationModal } from '@/components/organizer/SendNotificationModal'
 
 export function EventRegistrationsPage() {
   const { id } = useParams<{ id: string }>()
@@ -30,6 +32,7 @@ export function EventRegistrationsPage() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'confirmed' | 'cancelled'>('confirmed')
   const [isLoading, setIsLoading] = useState(true)
   const [checkingInId, setCheckingInId] = useState<string | null>(null)
+  const [notifyModalOpen, setNotifyModalOpen] = useState(false)
 
   const loadData = async () => {
     if (!id || !isSupabaseConfigured) {
@@ -173,14 +176,24 @@ export function EventRegistrationsPage() {
             </p>
           </div>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={exportCSV}
-            leftIcon={<Download className="w-4 h-4" />}
-          >
-            Export CSV
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setNotifyModalOpen(true)}
+              leftIcon={<Bell className="w-4 h-4 text-blue-600" />}
+            >
+              Notify Registrants
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={exportCSV}
+              leftIcon={<Download className="w-4 h-4" />}
+            >
+              Export CSV
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -294,6 +307,12 @@ export function EventRegistrationsPage() {
           description="No student registrations match your current query or filter."
         />
       )}
+      {/* Send Notification Modal */}
+      <SendNotificationModal
+        isOpen={notifyModalOpen}
+        onClose={() => setNotifyModalOpen(false)}
+        preselectedEventId={id}
+      />
     </div>
   )
 }

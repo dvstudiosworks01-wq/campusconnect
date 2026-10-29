@@ -33,6 +33,7 @@ import { QRAttendancePage } from '@/pages/organizer/QRAttendancePage'
 import { AttendanceReportsPage } from '@/pages/organizer/AttendanceReportsPage'
 import { EventResultsPage } from '@/pages/organizer/EventResultsPage'
 import { CertificateManagerPage } from '@/pages/organizer/CertificateManagerPage'
+import { OrganizerNotificationsPage } from '@/pages/organizer/OrganizerNotificationsPage'
 
 // Admin Pages
 import { AdminDashboard } from '@/pages/admin/AdminDashboard'
@@ -94,6 +95,7 @@ export function App() {
               <Route path="/organizer/attendance-reports" element={<AttendanceReportsPage />} />
               <Route path="/organizer/results" element={<EventResultsPage />} />
               <Route path="/organizer/certificates" element={<CertificateManagerPage />} />
+              <Route path="/organizer/notifications" element={<OrganizerNotificationsPage />} />
             </Route>
 
             {/* ADMIN PROTECTED ROUTES */}

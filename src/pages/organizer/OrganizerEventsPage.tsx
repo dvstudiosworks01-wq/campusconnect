@@ -11,6 +11,7 @@ import {
   Clock,
   MapPin,
   ExternalLink,
+  Bell,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -20,6 +21,7 @@ import { useToast } from '@/components/ui/Toast'
 import { useAuth } from '@/context/AuthContext'
 import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 import { formatDate, formatTime } from '@/lib/utils'
+import { SendNotificationModal } from '@/components/organizer/SendNotificationModal'
 
 export function OrganizerEventsPage() {
   const { user } = useAuth()
@@ -30,6 +32,8 @@ export function OrganizerEventsPage() {
   const [filter, setFilter] = useState<string>('all')
   const [isLoading, setIsLoading] = useState(true)
   const [submittingId, setSubmittingId] = useState<string | null>(null)
+  const [notifyModalOpen, setNotifyModalOpen] = useState(false)
+  const [notifyEventId, setNotifyEventId] = useState<string | undefined>(undefined)
 
   const fetchOrganizerEvents = async () => {
     if (!user || !isSupabaseConfigured) {
@@ -114,11 +118,24 @@ export function OrganizerEventsPage() {
           </p>
         </div>
 
-        <Link to="/organizer/events/new">
-          <Button size="sm" leftIcon={<PlusCircle className="w-4 h-4" />}>
-            Create New Event
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              setNotifyEventId(undefined)
+              setNotifyModalOpen(true)
+            }}
+            leftIcon={<Bell className="w-4 h-4 text-primary-600" />}
+          >
+            Send Notification
           </Button>
-        </Link>
+          <Link to="/organizer/events/new">
+            <Button size="sm" leftIcon={<PlusCircle className="w-4 h-4" />}>
+              Create New Event
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Filter Tabs */}
@@ -238,6 +255,19 @@ export function OrganizerEventsPage() {
                     </Button>
                   </Link>
 
+                  {/* Notify Button */}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setNotifyEventId(ev.id)
+                      setNotifyModalOpen(true)
+                    }}
+                    leftIcon={<Bell className="w-3.5 h-3.5 text-blue-600" />}
+                  >
+                    Notify
+                  </Button>
+
                   {/* Edit Button */}
                   <Link to={`/organizer/events/${ev.id}/edit`}>
                     <Button
@@ -260,6 +290,13 @@ export function OrganizerEventsPage() {
           description="You do not have any events matching the selected status filter."
         />
       )}
+
+      {/* Send Notification Modal */}
+      <SendNotificationModal
+        isOpen={notifyModalOpen}
+        onClose={() => setNotifyModalOpen(false)}
+        preselectedEventId={notifyEventId}
+      />
     </div>
   )
 }

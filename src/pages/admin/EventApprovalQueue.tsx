@@ -19,6 +19,7 @@ import { useToast } from '@/components/ui/Toast'
 import { useAuth } from '@/context/AuthContext'
 import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 import { formatDate, formatTime, formatDateTime } from '@/lib/utils'
+import { notifyAllStudentsNewEvent } from '@/lib/notifications'
 
 export function EventApprovalQueue() {
   const { user } = useAuth()
@@ -89,13 +90,23 @@ export function EventApprovalQueue() {
         type: 'event_approval',
         subject: `Your event "${title}" has been approved!`,
         body: `Congratulations, the college administration has published "${title}". Students can now view and register for this event.`,
-        status: 'pending',
+        status: 'sent',
+        sent_at: new Date().toISOString(),
+      })
+
+      // Notify all students that a new event has been published
+      const approvedEv = pendingEvents.find((e) => e.id === eventId)
+      const notifRes = await notifyAllStudentsNewEvent({
+        id: eventId,
+        title,
+        venue: approvedEv?.venue,
+        start_at: approvedEv?.start_at,
       })
 
       toast({
         type: 'success',
         title: 'Event Approved and Published!',
-        message: `"${title}" is now publicly visible on the portal.`,
+        message: `"${title}" is now active. All students (${notifRes.count}) have been notified.`,
       })
 
       await fetchPendingEvents()

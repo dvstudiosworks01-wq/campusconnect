@@ -14,6 +14,7 @@ import {
   History,
   FileText,
   BellRing,
+  Bell,
   Layers,
   BarChart3,
   ExternalLink,
@@ -51,6 +52,7 @@ export function Sidebar({ onCloseMobile }: SidebarProps) {
     { label: 'Attendance Records', to: '/organizer/attendance-reports', icon: History },
     { label: 'Publish Results', to: '/organizer/results', icon: Trophy },
     { label: 'Issue Certificates', to: '/organizer/certificates', icon: FileCheck2 },
+    { label: 'Send Notifications', to: '/organizer/notifications', icon: Bell },
   ]
 
   const adminLinks = [

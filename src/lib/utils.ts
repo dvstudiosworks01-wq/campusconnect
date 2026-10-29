@@ -49,6 +49,25 @@ export function formatTime(dateString: string | null | undefined): string {
   }
 }
 
+export function formatRelativeTime(dateString: string | null | undefined): string {
+  if (!dateString) return 'Just now'
+  try {
+    const diffMs = Date.now() - new Date(dateString).getTime()
+    const diffSec = Math.floor(diffMs / 1000)
+    if (diffSec < 60) return 'Just now'
+    const diffMin = Math.floor(diffSec / 60)
+    if (diffMin < 60) return `${diffMin}m ago`
+    const diffHours = Math.floor(diffMin / 60)
+    if (diffHours < 24) return `${diffHours}h ago`
+    const diffDays = Math.floor(diffHours / 24)
+    if (diffDays === 1) return 'Yesterday'
+    if (diffDays < 7) return `${diffDays}d ago`
+    return formatDate(dateString)
+  } catch {
+    return 'Recently'
+  }
+}
+
 /**
  * Check if two time intervals overlap.
  * Conflict rule: new_start < existing_end AND new_end > existing_start

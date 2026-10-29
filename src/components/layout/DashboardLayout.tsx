@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import { Menu, X, Bell, Shield } from 'lucide-react'
+import { Menu, X, Shield } from 'lucide-react'
 import { Sidebar } from './Sidebar'
 import { useAuth } from '@/context/AuthContext'
 import { Badge } from '@/components/ui/Badge'
+import { NotificationBellDropdown } from '@/components/notifications/NotificationBellDropdown'
 
 export function DashboardLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -80,15 +81,8 @@ export function DashboardLayout() {
               </Badge>
             )}
 
-            {/* Notification Bell */}
-            <div className="relative">
-              <button
-                className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors cursor-pointer"
-                title="Notifications"
-              >
-                <Bell className="h-5 w-5" />
-              </button>
-            </div>
+            {/* Notification Bell Dropdown */}
+            <NotificationBellDropdown />
 
             {/* User chip in header */}
             <div className="flex items-center gap-2 pl-3 border-l border-slate-200">

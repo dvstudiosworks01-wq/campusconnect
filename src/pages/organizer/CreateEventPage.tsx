@@ -10,6 +10,7 @@ import { useToast } from '@/components/ui/Toast'
 import { useAuth } from '@/context/AuthContext'
 import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 import type { EventCategory } from '@/types/database.types'
+import { notifyAllStudentsNewEvent } from '@/lib/notifications'
 
 const eventFormSchema = z
   .object({
@@ -45,7 +46,7 @@ const eventFormSchema = z
   )
 
 export function CreateEventPage() {
-  const { user } = useAuth()
+  const { user, role } = useAuth()
   const { toast } = useToast()
   const navigate = useNavigate()
 
@@ -92,7 +93,7 @@ export function CreateEventPage() {
     }
   }
 
-  const handleSubmit = async (submitStatus: 'draft' | 'pending') => {
+  const handleSubmit = async (submitStatus: 'draft' | 'pending' | 'published') => {
     if (!user) return
 
     setErrors({})
@@ -134,9 +135,23 @@ export function CreateEventPage() {
 
       if (error) throw error
 
+      if (submitStatus === 'published' && data) {
+        await notifyAllStudentsNewEvent({
+          id: data.id,
+          title: data.title,
+          venue: data.venue,
+          start_at: data.start_at,
+        })
+      }
+
       toast({
         type: 'success',
-        title: submitStatus === 'pending' ? 'Submitted for Approval' : 'Event Draft Saved',
+        title:
+          submitStatus === 'published'
+            ? 'Event Published & Students Notified'
+            : submitStatus === 'pending'
+            ? 'Submitted for Approval'
+            : 'Event Draft Saved',
         message: `"${result.data.title}" was created successfully.`,
       })
 
@@ -297,14 +312,25 @@ export function CreateEventPage() {
             >
               Save as Draft
             </Button>
-            <Button
-              type="button"
-              isLoading={isSubmitting}
-              onClick={() => handleSubmit('pending')}
-              leftIcon={<Send className="w-4 h-4" />}
-            >
-              Submit for Admin Approval
-            </Button>
+            {role === 'admin' ? (
+              <Button
+                type="button"
+                isLoading={isSubmitting}
+                onClick={() => handleSubmit('published')}
+                leftIcon={<Send className="w-4 h-4" />}
+              >
+                Publish & Notify All Students
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                isLoading={isSubmitting}
+                onClick={() => handleSubmit('pending')}
+                leftIcon={<Send className="w-4 h-4" />}
+              >
+                Submit for Admin Approval
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
