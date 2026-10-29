@@ -65,38 +65,28 @@ export function LandingPage() {
 
   return (
     <div className="space-y-16 pb-20">
-      {/* Hero Section with KEC Logo's Institutional Royal Blue & Emerald Green */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#061838] via-[#092642] to-[#043022] text-white pt-20 pb-24 px-4 sm:px-6 lg:px-8 border-b border-emerald-950/40">
-        {/* KEC Logo Background Watermark / Emblem */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
+      {/* Hero Section with KEC Provided Image at Background (Blue & Green gradient removed) */}
+      <section className="relative overflow-hidden bg-white text-slate-900 pt-16 pb-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
+        {/* KEC Provided Image at Background */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
           <img
-            src="/kec-logo-transparent.png"
-            alt="Kongu Engineering College Logo Background"
-            className="w-[480px] sm:w-[600px] lg:w-[680px] max-w-[90vw] object-contain opacity-20 filter brightness-110 drop-shadow-[0_0_80px_rgba(14,165,233,0.35)] -translate-y-2 sm:-translate-y-4"
+            src="/kec-hero-bg.png"
+            alt="Kongu Engineering College Background"
+            className="w-[500px] sm:w-[650px] lg:w-[750px] max-w-[92vw] object-contain opacity-25"
           />
         </div>
 
-        {/* KEC Blue ambient glow (top left) */}
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/25 rounded-full blur-3xl pointer-events-none" />
-        {/* KEC Emerald Green ambient glow (bottom right) */}
-        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-500/25 rounded-full blur-3xl pointer-events-none" />
-        {/* Center radial overlay for clarity */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(14,165,233,0.10),transparent_70%)] pointer-events-none" />
-
         <div className="max-w-6xl mx-auto text-center relative z-10 space-y-6">
-          <Badge
-            variant="default"
-            className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 px-3.5 py-1.5 text-xs uppercase tracking-wider font-semibold inline-flex items-center gap-2 shadow-sm backdrop-blur-sm"
-          >
-            <img src="/kec-logo-transparent.png" alt="KEC" className="w-4 h-4 object-contain inline-block" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-200 shadow-sm">
+            <img src="/kec-hero-bg.png" alt="KEC" className="w-4 h-4 object-contain inline-block" />
             <span>Kongu Engineering College, Perundurai</span>
-          </Badge>
+          </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight max-w-4xl mx-auto leading-tight sm:leading-none">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 max-w-4xl mx-auto leading-tight sm:leading-none">
             Empowering Campus Life with Next-Gen Event Coordination
           </h1>
 
-          <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
             The single unified college hub for hackathons, cultural festivals, sports leagues, time-limited QR attendance sessions, and tamper-proof digital certificates.
           </p>
 
@@ -104,7 +94,7 @@ export function LandingPage() {
             <Button
               size="lg"
               onClick={() => navigate('/events')}
-              className="bg-gradient-to-r from-blue-600 via-primary-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white shadow-lg shadow-emerald-950/40 font-semibold px-6 border-0"
+              className="bg-primary-600 hover:bg-primary-700 text-white shadow-md font-semibold px-6 border-0"
               rightIcon={<ArrowRight className="w-4 h-4" />}
             >
               Explore College Events
@@ -113,8 +103,8 @@ export function LandingPage() {
               variant="outline"
               size="lg"
               onClick={() => navigate('/verify-certificate')}
-              className="bg-slate-900/80 hover:bg-slate-800 text-slate-200 border-emerald-800/50 shadow-sm"
-              leftIcon={<ShieldCheck className="w-4 h-4 text-emerald-400" />}
+              className="bg-white hover:bg-slate-50 text-slate-700 border-slate-300 shadow-sm"
+              leftIcon={<ShieldCheck className="w-4 h-4 text-primary-600" />}
             >
               Verify Certificate
             </Button>
@@ -122,12 +112,12 @@ export function LandingPage() {
         </div>
 
         {/* Active Events counter */}
-        <div className="max-w-xs mx-auto mt-14 px-2">
-          <div className="bg-slate-900/70 border border-blue-900/40 rounded-2xl p-5 text-center backdrop-blur-md shadow-lg">
-            <div className="text-3xl sm:text-4xl font-extrabold text-white">
+        <div className="max-w-xs mx-auto mt-12 px-2 relative z-10">
+          <div className="bg-white/95 border border-slate-200 rounded-2xl p-5 text-center shadow-md backdrop-blur-sm">
+            <div className="text-3xl sm:text-4xl font-extrabold text-slate-900">
               {activeEventsCount}
             </div>
-            <div className="text-xs text-blue-300 uppercase tracking-wider font-semibold mt-1">
+            <div className="text-xs text-slate-500 uppercase tracking-wider font-semibold mt-1">
               Active Events
             </div>
           </div>
