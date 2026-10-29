@@ -24,15 +24,28 @@ const KEC_DEPARTMENTS = [
   'Computer Applications (MCA)',
 ]
 
+const FACULTY_DESIGNATIONS = [
+  'Assistant Professor',
+  'Associate Professor',
+  'Professor',
+  'Head of Department (HOD)',
+  'Faculty Coordinator',
+  'Lab Instructor',
+  'Non-Teaching Staff',
+]
+
 export function ProfilePage() {
   const { profile, updateProfileDetails } = useAuth()
   const { toast } = useToast()
+
+  const isStaff = profile?.role === 'organizer' || profile?.role === 'admin'
 
   const [fullName, setFullName] = useState(profile?.full_name || '')
   const [rollNumber, setRollNumber] = useState(profile?.roll_number || '')
   const [phone, setPhone] = useState(profile?.phone || '')
   const [department, setDepartment] = useState(profile?.department || KEC_DEPARTMENTS[2])
   const [yearOfStudy, setYearOfStudy] = useState(profile?.year_of_study ? String(profile.year_of_study) : '3')
+  const [designation, setDesignation] = useState(profile?.designation || FACULTY_DESIGNATIONS[0])
   const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
@@ -42,6 +55,7 @@ export function ProfilePage() {
       if (profile.phone) setPhone(profile.phone)
       if (profile.department) setDepartment(profile.department)
       if (profile.year_of_study) setYearOfStudy(String(profile.year_of_study))
+      if (profile.designation) setDesignation(profile.designation)
     }
   }, [profile])
 
@@ -53,13 +67,20 @@ export function ProfilePage() {
     }
 
     setIsSaving(true)
-    const success = await updateProfileDetails({
+    const payload: any = {
       full_name: fullName.trim(),
       department: department.trim(),
-      year_of_study: parseInt(yearOfStudy, 10),
       roll_number: rollNumber.trim().toUpperCase(),
       phone: phone.trim(),
-    })
+    }
+
+    if (isStaff) {
+      payload.designation = designation
+    } else {
+      payload.year_of_study = parseInt(yearOfStudy, 10)
+    }
+
+    const success = await updateProfileDetails(payload)
 
     setIsSaving(false)
     if (success) {
@@ -80,9 +101,13 @@ export function ProfilePage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6 text-left">
       <div>
-        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Student Profile</h2>
+        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+          {isStaff ? 'Faculty & Staff Profile' : 'Student Profile'}
+        </h2>
         <p className="text-sm text-slate-500 mt-0.5">
-          Manage your collegiate profile, department information, and academic credentials.
+          {isStaff
+            ? 'Manage your institutional faculty profile, designation, and coordination details.'
+            : 'Manage your collegiate profile, department information, and academic credentials.'}
         </p>
       </div>
 
@@ -135,11 +160,11 @@ export function ProfilePage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
-                label="Roll / Register Number"
-                placeholder="e.g. 25ECR038"
+                label={isStaff ? 'Staff ID / Faculty Code' : 'Roll / Register Number'}
+                placeholder={isStaff ? 'e.g. STF-KEC-102' : 'e.g. 25ECR038'}
                 value={rollNumber}
                 onChange={(e) => setRollNumber(e.target.value.toUpperCase())}
-                helperText="Official student roll or register code"
+                helperText={isStaff ? 'Official college faculty or staff identification' : 'Official student roll or register code'}
               />
 
               <Input
@@ -168,20 +193,37 @@ export function ProfilePage() {
                 </select>
               </div>
 
-              <div className="space-y-1.5 text-left">
-                <label className="block text-sm font-medium text-slate-700">Year of Study</label>
-                <select
-                  value={yearOfStudy}
-                  onChange={(e) => setYearOfStudy(e.target.value)}
-                  className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                >
-                  <option value="1">Year 1 (Freshman)</option>
-                  <option value="2">Year 2 (Sophomore)</option>
-                  <option value="3">Year 3 (Junior)</option>
-                  <option value="4">Year 4 (Senior)</option>
-                  <option value="5">Year 5 (Postgraduate / MBA / MCA)</option>
-                </select>
-              </div>
+              {isStaff ? (
+                <div className="space-y-1.5 text-left">
+                  <label className="block text-sm font-medium text-slate-700">Designation</label>
+                  <select
+                    value={designation}
+                    onChange={(e) => setDesignation(e.target.value)}
+                    className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  >
+                    {FACULTY_DESIGNATIONS.map((desig) => (
+                      <option key={desig} value={desig}>
+                        {desig}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <div className="space-y-1.5 text-left">
+                  <label className="block text-sm font-medium text-slate-700">Year of Study</label>
+                  <select
+                    value={yearOfStudy}
+                    onChange={(e) => setYearOfStudy(e.target.value)}
+                    className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  >
+                    <option value="1">Year 1 (Freshman)</option>
+                    <option value="2">Year 2 (Sophomore)</option>
+                    <option value="3">Year 3 (Junior)</option>
+                    <option value="4">Year 4 (Senior)</option>
+                    <option value="5">Year 5 (Postgraduate / MBA / MCA)</option>
+                  </select>
+                </div>
+              )}
             </div>
 
             {/* Role security note */}

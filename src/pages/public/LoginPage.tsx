@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { GraduationCap, ShieldCheck, AlertCircle, ArrowRight, Info } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
@@ -15,9 +15,11 @@ export function LoginPage() {
   const from = (location.state as any)?.from?.pathname || (role === 'admin' ? '/admin' : role === 'organizer' ? '/organizer' : '/student')
 
   // If already logged in, redirect
-  if (user && role) {
-    navigate(from, { replace: true })
-  }
+  useEffect(() => {
+    if (user && role) {
+      navigate(from, { replace: true })
+    }
+  }, [user, role, navigate, from])
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true)

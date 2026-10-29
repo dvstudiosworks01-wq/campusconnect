@@ -193,7 +193,7 @@ export function NotificationBellDropdown() {
 
       {/* Dropdown Popover */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-white border border-slate-200 shadow-2xl z-50 overflow-hidden text-left animate-in fade-in slide-in-from-top-2">
+        <div className="fixed sm:absolute right-2 sm:right-0 top-16 sm:top-auto mt-2 w-[calc(100vw-1rem)] sm:w-96 max-w-[380px] rounded-2xl bg-white border border-slate-200 shadow-2xl z-50 overflow-hidden text-left animate-in fade-in slide-in-from-top-2">
           {/* Header */}
           <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
             <div className="flex items-center gap-2">

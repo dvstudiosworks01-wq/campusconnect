@@ -68,7 +68,7 @@ export function DashboardLayout() {
             >
               <Menu className="h-6 w-6" />
             </button>
-            <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+            <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight truncate max-w-[160px] sm:max-w-none">
               {getPageTitle()}
             </h1>
           </div>

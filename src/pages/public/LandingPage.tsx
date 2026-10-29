@@ -82,19 +82,19 @@ export function LandingPage() {
             <span>Kongu Engineering College, Perundurai</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 max-w-4xl mx-auto leading-tight sm:leading-none">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 max-w-4xl mx-auto leading-tight sm:leading-none">
             Empowering Campus Life with Next-Gen Event Coordination
           </h1>
 
-          <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
+          <p className="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed px-2">
             The single unified college hub for hackathons, cultural festivals, sports leagues, time-limited QR attendance sessions, and tamper-proof digital certificates.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-3.5 pt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3 w-full sm:w-auto px-4 sm:px-0">
             <Button
               size="lg"
               onClick={() => navigate('/events')}
-              className="bg-primary-600 hover:bg-primary-700 text-white shadow-md font-semibold px-6 border-0"
+              className="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white shadow-md font-semibold px-6 border-0"
               rightIcon={<ArrowRight className="w-4 h-4" />}
             >
               Explore College Events
@@ -103,7 +103,7 @@ export function LandingPage() {
               variant="outline"
               size="lg"
               onClick={() => navigate('/verify-certificate')}
-              className="bg-white hover:bg-slate-50 text-slate-700 border-slate-300 shadow-sm"
+              className="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-700 border-slate-300 shadow-sm"
               leftIcon={<ShieldCheck className="w-4 h-4 text-primary-600" />}
             >
               Verify Certificate

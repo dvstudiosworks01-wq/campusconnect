@@ -130,7 +130,7 @@ export function OrganizerDashboard() {
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="border-slate-200 shadow-subtle">
           <CardContent className="pt-5 flex items-center justify-between">
             <div>

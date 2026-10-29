@@ -1,11 +1,22 @@
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { GraduationCap, Award, Calendar, LogIn, LayoutDashboard, User } from 'lucide-react'
+import {
+  GraduationCap,
+  Calendar,
+  LogIn,
+  LayoutDashboard,
+  User,
+  ShieldCheck,
+  Menu,
+  X,
+} from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { useAuth } from '@/context/AuthContext'
 
 export function Navbar() {
   const { user, profile } = useAuth()
   const navigate = useNavigate()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const getDashboardPath = () => {
     if (!profile) return '/student'
@@ -26,11 +37,12 @@ export function Navbar() {
               CampusConnect
             </span>
             <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">
-              College Events Portal
+              Kongu Events Portal
             </span>
           </div>
         </Link>
 
+        {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
           <Link
             to="/events"
@@ -41,13 +53,15 @@ export function Navbar() {
           </Link>
           <Link
             to="/verify-certificate"
-            className="hover:text-primary-600 transition-colors"
+            className="flex items-center gap-1.5 hover:text-primary-600 transition-colors"
           >
+            <ShieldCheck className="w-4 h-4" />
             Verify Certificate
           </Link>
         </nav>
 
-        <div className="flex items-center gap-3">
+        {/* Desktop User / Auth Button */}
+        <div className="hidden md:flex items-center gap-3">
           {user ? (
             <div className="flex items-center gap-3">
               <Button
@@ -85,7 +99,90 @@ export function Navbar() {
             </Button>
           )}
         </div>
+
+        {/* Mobile Hamburger Toggle Button */}
+        <div className="flex md:hidden items-center gap-2">
+          {user && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-xs px-2.5 h-8"
+              onClick={() => navigate(getDashboardPath())}
+            >
+              Dashboard
+            </Button>
+          )}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
+            aria-label="Toggle Navigation Menu"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Slide-Down Menu Drawer */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-slate-100 bg-white/98 px-4 pt-3 pb-5 space-y-3 shadow-lg animate-in slide-in-from-top-2">
+          <nav className="flex flex-col space-y-1 text-sm font-medium text-slate-700">
+            <Link
+              to="/events"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2.5 p-2.5 rounded-lg hover:bg-slate-50 text-slate-800 transition-colors"
+            >
+              <Calendar className="w-4 h-4 text-primary-600" />
+              <span>Events Directory</span>
+            </Link>
+            <Link
+              to="/verify-certificate"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2.5 p-2.5 rounded-lg hover:bg-slate-50 text-slate-800 transition-colors"
+            >
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <span>Verify Certificate</span>
+            </Link>
+            {user ? (
+              <Link
+                to="/student/profile"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2.5 p-2.5 rounded-lg hover:bg-slate-50 text-slate-800 transition-colors"
+              >
+                <User className="w-4 h-4 text-slate-600" />
+                <span>My Profile ({profile?.full_name || 'Account'})</span>
+              </Link>
+            ) : null}
+          </nav>
+
+          <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
+            {user ? (
+              <Button
+                size="sm"
+                className="w-full"
+                leftIcon={<LayoutDashboard className="w-4 h-4" />}
+                onClick={() => {
+                  setMobileMenuOpen(false)
+                  navigate(getDashboardPath())
+                }}
+              >
+                Open Dashboard
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                className="w-full"
+                leftIcon={<LogIn className="w-4 h-4" />}
+                onClick={() => {
+                  setMobileMenuOpen(false)
+                  navigate('/login')
+                }}
+              >
+                Sign In to Portal
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   )
 }
